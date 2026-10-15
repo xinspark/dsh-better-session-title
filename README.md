@@ -75,6 +75,10 @@ dsh plugin --profile web add github:xinspark/dsh-better-session-title#v1.2.0
 
 ![工作区下拉](docs/screenshots/workspace-dropdown.png)
 
+**子智能体层级面包屑**——会话为子智能体时，面包屑自动带上父级链路；点击末级可切换兄弟子智能体：
+
+![子智能体面包屑](docs/screenshots/subagent-crumb.png)
+
 ## 使用
 
 安装后，打开任意会话，顶栏中央即显示「工作区 / 会话」面包屑：

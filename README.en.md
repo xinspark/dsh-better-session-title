@@ -75,6 +75,10 @@ The bundle patch (`cordis.patch.yml`) registers both the host and client halves 
 
 ![Workspace dropdown](docs/screenshots/workspace-dropdown.png)
 
+**Subagent ancestry crumb** — when the session is a subagent, the breadcrumb grows its parent chain; click the last level to switch between sibling subagents:
+
+![Subagent crumb](docs/screenshots/subagent-crumb.png)
+
 ## Usage
 
 After installation, open any session — the topbar center shows the "Workspace / Session" breadcrumb:
