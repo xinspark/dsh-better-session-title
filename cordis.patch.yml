@@ -1,6 +1,6 @@
-# dsh-better-session-title 配置层：插入 host + client 双半插件行
-# name 用包名（pnpm link 后从 profile node_modules 解析），与 publish.md 教程一致
-# 注意：新增行必须用 insert 列表（顶层 `- id/name` 形式是按 id 覆盖已有行）
+# dsh-better-session-title 配置层：插入 host + client 双半插件行。
+# name 用包名 —— DSH 从 profile 的 node_modules 解析（`dsh plugin add` / pnpm link 装好后即可解析）。
+# 注意：新增行必须用下面的 insert 列表；顶层 `- id/name` 是按 id 覆盖已有行，不能用来新增。
 - insert:
     - id: dsh-better-session-title
       name: dsh-better-session-title
