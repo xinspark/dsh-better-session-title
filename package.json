@@ -1,7 +1,7 @@
 {
   "name": "dsh-better-session-title",
-  "version": "1.2.1",
-  "description": "Better Session Title — replace the DSH session topbar title with a workspace/session breadcrumb: switch workspaces and sessions right from the topbar.",
+  "version": "1.3.0",
+  "description": "工作区/会话面包屑 · Workspace/session breadcrumb",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -31,6 +31,7 @@
   "files": [
     "index.js",
     "lib/client.js",
+    "locale/*.json",
     "cordis.patch.yml",
     "CHANGELOG.md"
   ],
