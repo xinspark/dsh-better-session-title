@@ -1,6 +1,6 @@
 {
   "name": "dsh-better-session-title",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Better Session Title — replace the DSH session topbar title with a workspace/session breadcrumb: switch workspaces and sessions right from the topbar.",
   "license": "MIT",
   "repository": {

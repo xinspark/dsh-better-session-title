@@ -24,7 +24,7 @@ Better Session Title 是面向 [DeepSeek Harness](https://github.com/deepseek-ai
 
 支持 **Windows · macOS · Linux**（DSH Web GUI）——纯 JavaScript，无原生依赖，分发无需构建步骤。
 
-> 验证基线：**DeepSeek Harness 0.2.0-rc.2**（DSH Desktop 与 `dsh web`）。其它版本未经验证。
+> 验证基线：**DeepSeek Harness 0.2.1-rc.2**（DSH NEXT Desktop 与 `dsh web`）；1.2.1 起同时兼容 0.2.0-rc.2。其它版本未经验证。
 
 ## 安装
 

@@ -24,7 +24,7 @@ All inline row actions reuse native DSH capabilities: rename workspace/session, 
 
 Works on **Windows · macOS · Linux** (DSH Web GUI) — plain JavaScript, no native dependencies, no build step for distribution.
 
-> Verification baseline: **DeepSeek Harness 0.2.0-rc.2** (DSH Desktop and `dsh web`). Other versions are untested.
+> Verification baseline: **DeepSeek Harness 0.2.1-rc.2** (DSH NEXT Desktop and `dsh web`); 0.2.0-rc.2 stays compatible since 1.2.1. Other versions are untested.
 
 ## Install
 
