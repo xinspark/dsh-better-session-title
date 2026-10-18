@@ -1,7 +1,8 @@
 {
   "name": "dsh-better-session-title",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "工作区/会话面包屑 · Workspace/session breadcrumb",
+  "icon": "./icon.svg",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -26,10 +27,12 @@
   "exports": {
     ".": "./index.js",
     "./client": "./lib/client.js",
+    "./locale/*.json": "./locale/*.json",
     "./package.json": "./package.json"
   },
   "files": [
     "index.js",
+    "icon.svg",
     "lib/client.js",
     "locale/*.json",
     "cordis.patch.yml",

@@ -1,0 +1,16 @@
+<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="4.5" y="8.5" width="27" height="19" rx="4.5" stroke="#7CB7FF" stroke-opacity="0.7" stroke-width="1.4" />
+  <rect x="8.5" y="14" width="6.5" height="8" rx="1.8" fill="url(#bst-workspace)" />
+  <path d="M17.8 13.4L19.4 22.6" stroke="#9FB8FF" stroke-width="1.6" stroke-linecap="round" stroke-opacity="0.85" />
+  <rect x="22" y="14" width="6" height="8" rx="1.8" fill="url(#bst-session)" />
+  <defs>
+    <linearGradient id="bst-workspace" x1="8.5" y1="14" x2="15" y2="22" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6FB2EE" />
+      <stop offset="1" stop-color="#3E58D6" />
+    </linearGradient>
+    <linearGradient id="bst-session" x1="22" y1="14" x2="28" y2="22" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#41E1AC" />
+      <stop offset="1" stop-color="#658EFF" />
+    </linearGradient>
+  </defs>
+</svg>
