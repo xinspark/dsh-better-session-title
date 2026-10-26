@@ -17,7 +17,7 @@
 
 Better Session Topbar (package name `dsh-better-session-topbar`; the repository keeps its old name `dsh-better-session-title`) is a **session-topbar enhancement plugin** for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) — pure UI enhancement, no new capabilities, no system source changes. DSH's native topbar shows only the session title (an ancestry breadcrumb) in the center, while workspace/session switching lives in the left sidebar; when the sidebar is collapsed, every switch costs extra clicks. This plugin puts the switching entry right into the topbar:
 
-- **Workspace dropdown** — all workspaces with their session counts, one-click switch, plus "New workspace" (native directory picker) and delete.
+- **Workspace dropdown** — all workspaces with their session counts, one-click switch, plus "Add workspace" (the plugin's own dialog, matching the native metrics; its footer offers "Choose with the system picker") and delete.
 - **Session dropdown** — all sessions of the current workspace with relative timestamps, one-click switch, plus "New session".
 - **The three native topbar chips are brought in line too** — 子智能体 / 智能体团队 / 后台任务 and the breadcrumb share one set of metrics (type size, padding, corners, hover fill, icon size) and give way in a fixed order: chips drop to their counters → the title steps aside for icons → the chips become icons.
 - **Two narrow-screen displays** — when the row truly runs out of room, pick **Breadcrumb** (folds to icons; every level stays clickable) or **Session title** (the row keeps only the title). Each option's trade-off is written next to it on the plugin page.
@@ -61,7 +61,7 @@ The bundle patch (`cordis.patch.yml`) registers both the host and client halves 
 | Width ladder | When the row runs out of room the segments give way in one fixed order: the three native chips (子智能体 / 智能体团队 / 后台任务) go `full → count` (label replaced by the `(N)` badge) → **the whole breadcrumb collapses to icons** (the counters survive, a long title is the least valuable thing on the row) → the chips go `count → icon`. Every decision comes from the measured free width, never from a remembered header width, so a longer title or a vanished chip unfolds by itself. |
 | Narrow-screen display | Two options on the plugin page: **Breadcrumb** (the default — keeps the workspace / session levels, each still clickable for switching after folding to icons; the cost is that at the narrowest only icons remain, so the full title needs a hover or a click) or **Session title** (the row keeps only the current session title — the parent / current pair inside a subagent session — so long titles stay readable; the cost is that the workspace and switching move into the dropdown, and at the narrowest the parent becomes the up/down arrow glyph). Both take effect at the same fold point and preview live. |
 | Chip parity | The three native chips share one anatomy — icon · label · (N) · ring · chevron — with identical 12px/18 type, `3px 7px` padding, 5px gap, 28px height, 14px icon, 12px chevron, corners and hover fill. What the native ones lack is added (the team chip gets a member count and a running ring phase-pinned to the official spinner), and what one of them orders differently is normalised (the jobs chip's running dot moves after the counter). |
-| Workspace dropdown | Workspace list (session-count meta), New workspace (native directory picker), row "more": rename / delete workspace. |
+| Workspace dropdown | Workspace list (session-count meta), Add workspace (plugin dialog; its footer can hand off to the system picker), row "more": rename / delete workspace. |
 | Session dropdown | Session list of the current workspace (relative-time meta), New session, row "more": rename / fork / archive session. |
 | Native-consistent interactions | The dropdown is a self-drawn layer that reuses the native menu tokens (`--dsw-elevation-prominent`, `--dsw-radius-lg`, `--dsw-menu-surface-fill` + `--dsw-menu-backdrop-filter`, hover fill `--dsw-alias-interactive-bg-hover`); its row metrics are min-height 40 / padding 8·10 / 14px·22px (matching the native `AccountMenu` `[role=menuitem]`; the native `Menu.module.css` is more compact and this plugin does not follow it). The more menu and rename/delete dialogs use the native `Menu` / `Modal` / `Button` / `Input` (autoFocus, select-all, IME-safe Enter, duplicate workspace-name check, error rows). |
 | Shared lifecycle | The more menu closes with its owning dropdown (outside click / Escape / selection / switching) — no orphan menus. |
@@ -98,7 +98,7 @@ The bundle patch (`cordis.patch.yml`) registers both the host and client halves 
 
 After installation, open any session — the topbar center shows the "Workspace / Session" breadcrumb:
 
-- Click the **workspace** side: the workspace dropdown opens ("New workspace" on top).
+- Click the **workspace** side: the workspace dropdown opens ("Add workspace" on top).
 - Click the **session** side: the session dropdown opens ("New session" on top).
 - Hover a row: the "More" button appears at the row end (rename / fork / archive etc., per row type).
 - Select a row to switch; click outside or press `Esc` to close the dropdown.
