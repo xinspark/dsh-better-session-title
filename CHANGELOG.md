@@ -18,6 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **直接接管原生「添加工作区」弹窗（官方宿主）。** 面包屑挂载期间往两个目录流槽注册 `priority: -1` 的 occupant（盖过官方 browse occupant）；owner 打开流程时取消它并派发 `bst:take-over-add-workspace`，由面包屑打开插件自己的对话框。于是侧栏 + 与「添加工作区…」菜单项弹的都是插件这张（与官方同度量的）面板。只在官方宿主 + browse 后端可用时注册，面包屑卸载即释放；社区版（`window.desktopNext`）保留它自己的系统对话框驱动，不去抢。
 - **代码里加了一整段「DSH 升级维护清单」注释**（`lib/client.js` 顶部）：包名/槽位/服务/命令/preload 桥/官方 CSS 度量/顶栏 DOM 锚点/primitives 组件/错误文案/打包，共 10 类耦合点，逐条写明升级后要核对什么；README 中英各有一节同源清单。
 
+### Fixed
+
+- **面包屑在会话页整块消失（运行时报错）。** 接管弹窗的 ref 声明写在了使用点之后：渲染期执行 `openPickerRef.current = openPicker` 时踩到 TDZ（`Cannot access 'openPickerRef' before initialization`），异常把 `conversation.session.header.actions` 这个槽的条目连带卸载，用户看到的就是「插件页还在、会话页没效果」。已把 `useRef` 提到使用点之前，并在注释里写明这条顺序约束。接管逻辑本身随后在 browse 后端的独立宿主里实测通过（侧栏 + 弹的是本插件对话框，面包屑正常）。
+
 ## [1.3.6] - 2026-10-26
 
 ### Changed
