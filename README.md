@@ -139,7 +139,22 @@ dsh plugin --profile web add github:xinspark/dsh-better-session-title#v1.3.6
 - **行动作行别用原生文案** —— 「手机口袋」类插件（实测 `dsh-pocket` 2.11.0 的 `hideWsEntries`）会全局扫描 `[role=menuitem]/[role=option]/li/button/a`，按文本**精确匹配** `添加工作区` / `Add workspace` 后写 `display:none`，并挂 MutationObserver 让新插入的节点同样被隐藏；沿用原生文案的那一行会被一并吃掉，看起来就是「下拉里少了一行」。自有文案（`新建工作区` / `New workspace`）即可避开。
 - **「添加工作区」要先探服务，别把 `invoke` 当成功** —— 官方把目录选择做成组合能力：`workspace.add` 只负责“打开流程”，真正的交互由 `sidebar.workspaces.directoryFlow` 槽里的 occupant 决定（原生桌面/原生 web 是官方 browse 面板，社区桌面是社区自己注入的 native 驱动）。`shortcuts.invoke` 在命令 blocked（槽空 / `directoryBusy`）时**静默返回、不抛错**，所以“调用没报错”不等于“界面出现了”。更麻烦的是社区版（DSH Desktop Next）把官方 `directoryPickerController` 整个换掉：桌面窗口靠 preload 桥 `__DSH_DIRECTORY_PICKER__` 弹系统「选择文件夹」，网页版连桥都没有；此时 `listDirectory` / `pickDirectory` 一律抛 `gateway/service-unavailable`。现行顺序：`listDirectory()` 探活（只列目录、无副作用）→ 服务活着就借宿主交互（原生命令 → `pickDirectory` → 自建面板）→ 服务死了只认 preload 桥 → 桥也没有就弹明确提示，**不要**降级成路径输入（用户明确否决过）。探针日志里搜 `[bst-picker]` 能看到每次走的哪条路。
 - **自建对话框必须照官方度量，别自己发明** —— 对齐 `dsh-client-ui-directory-picker-browse` 时用的是 `headless` Modal + 自绘 header/content/footer：dialog `680×500`、header `16/14/8/24` + `.5px` 下边框、content `16/16/16/24`、footer `16/24` + `.5px` 上边框、`footerAction` 最小宽 72、「显示隐藏文件」是无边框文字开关。差一项，和原生并排就一眼看出来。
-- **「系统选择」按钮只在有 preload 桥时渲染** —— `__DSH_DESKTOP_PICK_DIRECTORY__`（官方桌面）或 `__DSH_DIRECTORY_PICKER__`（社区/官方 preload）存在才给按钮；不要拿 `uiWorkspace.pickDirectory` 兜底：自建面板只在 browse 后端打开，那里 `pick` 必然抛「needs the native capability」，按钮就成了“点了必报错”。文案三平台共用一条（使用系统选择文件夹 / Choose with system picker）——系统对话框长什么样由宿主与 preload 桥在 Windows / macOS / Linux 上各自决定，插件不按平台分叉。
+- **「系统选择」按钮只在有 preload 桥时渲染** —— `__DSH_DESKTOP_PICK_DIRECTORY__`（官方桌面）或 `__DSH_DIRECTORY_PICKER__`（社区/官方 preload）存在才给按钮；不要拿 `uiWorkspace.pickDirectory` 兜底：自建面板只在 browse 后端打开，那里 `pick` 必然抛「needs the native capability」，按钮就成了“点了必报错”。文案三平台共用一条（用系统选择器选择 / Choose with the system picker）——系统对话框长什么样由宿主与 preload 桥在 Windows / macOS / Linux 上各自决定，插件不按平台分叉。
+
+## DSH 升级维护清单
+
+本插件贴着 DSH 内部契约实现（没有稳定的第三方 API），升级 DSH 后按这张表逐项复核；`lib/client.js` 顶部有同源注释，改代码时以那里的 10 类明细为准。
+
+| 检查项 | 位置 | 升级后怎么验 |
+| --- | --- | --- |
+| 包名三处一致 | `package.json` name / `cordis.patch.yml` 行 id / `__ModuleLoader__.load({id})` | 插件列表能加载、无「导入失败」 |
+| 槽位名 | `conversation.session.header.actions`、`sidebar.workspaces.directoryFlow`、`conversation.hero.workspace.directoryFlow`、`plugins.row.config` | `cordis_inspect_query` 看名字与 props 是否还在 |
+| 服务依赖 | 必需 `slots` / `workspaces` / `sessions` / `uiWorkspace` / `locale`；可选 `shortcuts` / `configForms` | 下拉动作可用、设置页存在 |
+| 目录选择交互 | browse 面板 / native 系统对话框；桥 `__DSH_DESKTOP_PICK_DIRECTORY__`、`__DSH_DIRECTORY_PICKER__`；社区版 `priority:-1` occupant | 桌面窗口 / 网页 / 社区桌面 / 社区网页 四种组合各点一次 |
+| 对话框度量 | 官方 `DirectoryBrowser.module.css`：680×500、header 16/14/8/24、footer 16/24、`footerAction` 72 | 与原生并排比一次 |
+| 顶栏 DOM 锚点 | `header[data-window-drag]` + `nav:has(~ div .bst-crumbs)`（0.2.0 的 `data-conversation-*` 已移除） | 原生标题被隐藏、窄屏切换正常 |
+| primitives 组件 | `Modal({headless})` / `Button` / `Input` / `Menu` / `*Regular` 图标 | 两个对话框与插件设置页各点开一次 |
+| 文案键 | 与原生菜单对齐（添加工作区 / 新会话 / 分支会话） | 中英各看一次 |
 
 ## 特别感谢
 

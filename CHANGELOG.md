@@ -14,7 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`shortcuts` 不再是硬依赖。** 它只用于「更多」菜单里的快捷键提示，却被写进了 cordis 的 `inject`：缺少该服务的第三方发行版上，整个插件（连面包屑）都不会 apply。现在改走 `ctx.inject` 子级，缺席时只少一处按键提示。
 - **探针日志多一档 `[bst-picker]`**：记录这次「添加工作区」走的是哪条路（服务活/死、槽占用数、桥有无），下次遇到新发行版不用再猜。
 - **「添加工作区」对话框改成与官方逐项同度量。** 以前用 Modal 自带的标题栏/页脚，和官方 `dsh-client-ui-directory-picker-browse` 对不上：现在改成 `headless` Modal + 自绘 header（`h2` 16/510 + 面包屑条）/ content / footerBar，数值全部照官方 CSS——dialog `680×500`、header `16/14/8/24` + `.5px` 下边框、content `16/16/16/24`、footer `16/24` + `.5px` 上边框、`footerAction` 最小宽 72；「显示隐藏文件」从按钮改成原生那种无边框文字开关，右上角补回 X。
-- **页脚 gap 里加回「系统选择」按钮（官方 `nativePicker` 同款位置）。** 只在有 preload 桥（`__DSH_DESKTOP_PICK_DIRECTORY__` 或 `__DSH_DIRECTORY_PICKER__`）时出现，点击直接开系统「选择文件夹」，选中后走 `workspaces.create` + `openWorkspace`，与社区版桌面窗口点「添加工作区」的效果一致。文案三平台共用一条「使用系统选择文件夹」/「Choose with system picker」（系统对话框在 Windows / macOS / Linux 上分别由宿主与 preload 桥决定，插件不按平台分叉）；不给 `uiWorkspace.pickDirectory` 留入口——本面板只在 browse 后端打开，那里 pick 必然报错。
+- **页脚 gap 里加回「系统选择」按钮（官方 `nativePicker` 同款位置）。** 只在有 preload 桥（`__DSH_DESKTOP_PICK_DIRECTORY__` 或 `__DSH_DIRECTORY_PICKER__`）时出现，点击直接开系统「选择文件夹」，选中后走 `workspaces.create` + `openWorkspace`，与社区版桌面窗口点「添加工作区」的效果一致。文案三平台共用一条「用系统选择器选择」/「Choose with the system picker」（系统对话框在 Windows / macOS / Linux 上分别由宿主与 preload 桥决定，插件不按平台分叉）；不给 `uiWorkspace.pickDirectory` 留入口——本面板只在 browse 后端打开，那里 pick 必然报错。
+- **直接接管原生「添加工作区」弹窗（官方宿主）。** 面包屑挂载期间往两个目录流槽注册 `priority: -1` 的 occupant（盖过官方 browse occupant）；owner 打开流程时取消它并派发 `bst:take-over-add-workspace`，由面包屑打开插件自己的对话框。于是侧栏 + 与「添加工作区…」菜单项弹的都是插件这张（与官方同度量的）面板。只在官方宿主 + browse 后端可用时注册，面包屑卸载即释放；社区版（`window.desktopNext`）保留它自己的系统对话框驱动，不去抢。
+- **代码里加了一整段「DSH 升级维护清单」注释**（`lib/client.js` 顶部）：包名/槽位/服务/命令/preload 桥/官方 CSS 度量/顶栏 DOM 锚点/primitives 组件/错误文案/打包，共 10 类耦合点，逐条写明升级后要核对什么；README 中英各有一节同源清单。
 
 ## [1.3.6] - 2026-10-26
 
