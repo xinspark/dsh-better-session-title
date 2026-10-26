@@ -3,6 +3,8 @@
 > 面向发布执行者（人或 agent）。`docs/` **不在** npm `files` 白名单里 —— 本文不会发进包。
 > 主分发渠道：**GitHub Release + tag**（README 的安装指令引用 `#v1.2.0`）。
 > 验证基线：DSH **0.2.0-rc.2**（`@deepseek-ai/dsh-client-ui-primitives` 与 app 依赖一致）。
+>
+> **包名已变更（1.3.6）**：包名从 `dsh-better-session-title` 改为 **`dsh-better-session-topbar`**，仓库名不变（GitHub 地址、安装命令里的仓库路径照旧）。本文line 36 / 44 的 npm 发布与卸载命令按新包名理解；旧名在 npmjs 上仍为 404，但它已不是本包的包名。另注意：**改包名后运行中的宿主必须重启一次**才收敛（旧行留在内存组合里会报导入失败），详见 CHANGELOG 1.3.6。
 
 ## 0. 发布门前置：两件事 + 两个红灯
 

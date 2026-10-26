@@ -13,9 +13,9 @@
 
 <h3 align="center">Replace the DSH topbar session title with a two-level "Workspace / Session" breadcrumb — switch right from the topbar</h3>
 
-<p align="center"><a href="#install"><ins><code>dsh plugin --profile web add github:xinspark/dsh-better-session-title#v1.3.5</code></ins></a></p>
+<p align="center"><a href="#install"><ins><code>dsh plugin --profile web add github:xinspark/dsh-better-session-title#v1.3.6</code></ins></a></p>
 
-Better Session Topbar (package name `dsh-better-session-title`) is a **session-topbar enhancement plugin** for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) — pure UI enhancement, no new capabilities, no system source changes. DSH's native topbar shows only the session title (an ancestry breadcrumb) in the center, while workspace/session switching lives in the left sidebar; when the sidebar is collapsed, every switch costs extra clicks. This plugin puts the switching entry right into the topbar:
+Better Session Topbar (package name `dsh-better-session-topbar`; the repository keeps its old name `dsh-better-session-title`) is a **session-topbar enhancement plugin** for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) — pure UI enhancement, no new capabilities, no system source changes. DSH's native topbar shows only the session title (an ancestry breadcrumb) in the center, while workspace/session switching lives in the left sidebar; when the sidebar is collapsed, every switch costs extra clicks. This plugin puts the switching entry right into the topbar:
 
 - **Workspace dropdown** — all workspaces with their session counts, one-click switch, plus "New workspace" (native directory picker) and delete.
 - **Session dropdown** — all sessions of the current workspace with relative timestamps, one-click switch, plus "New session".
@@ -30,24 +30,25 @@ Works on **Windows · macOS · Linux** (DSH Web GUI) — plain JavaScript, no na
 
 ## Install
 
-`dsh-better-session-title` is a **bundle** — a configuration patch layer distributed as a package (see the [official DSH plugin publishing docs](https://deepseek-harness.github.io/deepseek-harness/develop/basic/publish)). Install it into a profile with `dsh plugin`: it links the package and appends it to `dsh.profile.bundles`:
+`dsh-better-session-topbar` is a **bundle** — a configuration patch layer distributed as a package (see the [official DSH plugin publishing docs](https://deepseek-harness.github.io/deepseek-harness/develop/basic/publish)). Install it into a profile with `dsh plugin`: it links the package and appends it to `dsh.profile.bundles`:
 
 ```sh
-# from GitHub (primary channel; v1.3.5 is the current release tag)
-dsh plugin --profile web add github:xinspark/dsh-better-session-title#v1.3.5
+# from GitHub (primary channel; v1.3.6 is the current release tag)
+# note: the repository is dsh-better-session-title, the package is dsh-better-session-topbar
+dsh plugin --profile web add github:xinspark/dsh-better-session-title#v1.3.6
 ```
 
 - **Consider locking a commit**: a GitHub install pulls the repository source, so later pushes don't silently change what you run. To pin the exact content, use `github:xinspark/dsh-better-session-title#<commit-sha>` (as recommended by the official docs).
-- **Local directory / tarball** (development or offline):
+- **Local directory / tarball** (development or offline; the directory keeps the repository name, the package name is in `package.json`):
 
   ```sh
   dsh plugin --profile web add ./dsh-better-session-title
-  dsh plugin --profile web add ./dsh-better-session-title-1.3.5.tgz
+  dsh plugin --profile web add ./dsh-better-session-topbar-1.3.6.tgz
   ```
 
 Then start the Web UI: `dsh web` (or `dsh --profile web`). The first `add` auto-initializes the profile with `@deepseek-ai/dsh-base`.
 
-Uninstall: `dsh plugin --profile web remove dsh-better-session-title` (removes the dependency and the composition layer).
+Uninstall: `dsh plugin --profile web remove dsh-better-session-topbar` (removes the dependency and the composition layer; `dsh plugin` keys on the package name, not the repository directory).
 
 The bundle patch (`cordis.patch.yml`) registers both the host and client halves automatically. The client half is served on demand: client changes apply after a page refresh; host changes need a restart.
 
@@ -128,6 +129,8 @@ Quick reference:
 - **The narrow-screen mode is an enum, not a boolean** — `narrowMode` is `'crumb' | 'title'` (host side: `z.union([z.const(...), z.const(...)])`). Up to 1.3.4 the stored field was the boolean `narrowTitle`; after the rename the old value is dropped by the schema, so the plugin falls back to the default Breadcrumb display — pick the other option on the plugin page.
 - **Why the selector is not a SegmentedControl** — the native `SegmentedControl` is tablist → panel semantics (each option carries an `aria-controls` pointing at a panel); there is no panel here, so it would emit dangling `aria-controls` references. The two-option selector reuses the cube DSH itself uses for its appearance picker: `.5px` border, `--dsw-radius-xl`, selected state swapping to `--dsw-alias-bg-module-platform` + `--dsw-static-neutral-bluish-400`, with `aria-pressed` carrying the selection.
 - **Invariants of the narrow title state** — (1) the workspace level is hidden with `display: none` via `data-bst-level="ws"`; do **not** stop rendering it, because `crumbNeed` is derived from the `.bst-crumb-btn` count and removing it drops the threshold from 285 to 151, which makes the layout flap between hidden and shown; (2) the state forces the text form (`setIconic('')`), otherwise the ladder would fold the last level into a glyph, which contradicts what a title is; (3) the session icon lives inside `span.bst-crumb-icon` and is hidden only in this state — the wide breadcrumb keeps it; (4) inside a subagent session the `parent / current` pair compresses one step further: when `per` bottoms out (150) the parent turns into the native up/down switcher glyph and gives its width to the title, expanding again at 190 — the glyph is the **exception** to the icon hiding (`.bst-crumb-iconic .bst-crumb-icon` must be restored in this state), otherwise collapsing would leave an empty button.
+- **The package name must be ASCII, and three places must agree** — `package.json`'s `name`, the row id in `cordis.patch.yml`, and the `id` in `lib/client.js`'s `__ModuleLoader__.load({ id })` are the same string: the host resolves the bundle by package name and serves the factory under that key, and the browser waits for exactly that key — a mismatch means a factory that never arrives or an import failure. The Chinese display name (更好的会话顶栏) lives only in `locale/*.json`'s `meta.title` and the host half's `name` string. **A CJK package name does not work**: `npm install` fails outright with `EINVALIDPACKAGENAME` (`name can only contain URL-friendly characters`), and every `dsh plugin add/remove` in a profile goes through npm.
+- **A package rename does not converge in a running host** — after updating the profile's `dependencies`, `dsh.profile.bundles`, patch row id and `node_modules` link, the on-disk state is correct, but the running host keeps the pre-rename row in its live composition (a bundle's contributed rows are not unloaded when the bundle leaves `bundles`). A page refresh then reports "failed to load plugins / 1 entry did not activate … import failed", and `disabled: true` in the patch does not override it. **The app must be restarted once**; the stale row disappears on the next boot.
 - **Adding a setting touches two places** — declare the field in the host half's `Config` schema and mark it `.volatile()` (only volatile fields ride the form; a schema without one makes the whole row disappear); then add a control in `BstSettingsPage`, reading `configForms.get(row id)` and writing through the same instance with `set(field, value)`. The topbar reads the shared `bstSettings`, which is recomputed whenever the form changes.
 - **Change the width ladder** — the ladder is `full → count → icons → icon` and its thresholds are three constants: `CRUMB_LEVEL_COST` / `CRUMB_SEP_COST` (turned into `crumbNeed` from the current level count; 285 for two levels), `CRUMB_ICON_NEED` (160 — only below that does a chip become an icon) and `CRUMB_TEXT_ADD` (136, the margin required to unfold). Recompute them if you touch type size, padding or icon size — do not hard-code an integer. Do **not** add a `header.clientWidth` hysteresis: folds are usually caused by content changes (a rename, a new chip), and a fold keyed on header width never comes back. The chip metrics live in the `button[data-bst-chip]` rules; the decoration (counter, ring, dot order) is driven by the `data-bst-chip-*` markers.
 - **Change the icon-fallback threshold** — the threshold is `ICONIC_TEXT_FLOOR` (≈5 CJK characters wide): a level falls back to its icon only when its label is truncated *and* its visible width is below it, or when the whole row overflows. Two traps: (1) do not use "the title exceeds this level's `max-width`" as the predicate — that also matches in a wide window (a long title exceeds the cap by nature) and the UI would turn into icons everywhere; (2) do not assume the label always gets squeezed — topbar containers are not shrinkable by default, and the overflow shows up as clipping at the window edge instead (see the `has(.bst-crumbs)` rule that makes them shrinkable).

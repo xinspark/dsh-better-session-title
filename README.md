@@ -13,9 +13,9 @@
 
 <h3 align="center">把 DSH 顶栏的会话标题换成「工作区 / 会话」两级面包屑，切换入口直接放在顶栏</h3>
 
-<p align="center"><a href="#安装"><ins><code>dsh plugin --profile web add github:xinspark/dsh-better-session-title#v1.3.5</code></ins></a></p>
+<p align="center"><a href="#安装"><ins><code>dsh plugin --profile web add github:xinspark/dsh-better-session-title#v1.3.6</code></ins></a></p>
 
-更好的会话顶栏（包名 `dsh-better-session-title`）是面向 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 的**会话顶栏增强插件**——纯 UI 增强，不引入新能力，不改任何系统源码。DSH 原生顶栏中央只显示会话标题（层级面包屑），工作区/会话的切换入口在左侧边栏；侧边栏收起时，每次切换都要额外点击。本插件把切换入口直接放进顶栏：
+更好的会话顶栏（包名 `dsh-better-session-topbar`，仓库沿用 `dsh-better-session-title`）是面向 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 的**会话顶栏增强插件**——纯 UI 增强，不引入新能力，不改任何系统源码。DSH 原生顶栏中央只显示会话标题（层级面包屑），工作区/会话的切换入口在左侧边栏；侧边栏收起时，每次切换都要额外点击。本插件把切换入口直接放进顶栏：
 
 - **工作区下拉** —— 展开可见全部工作区及其会话数，一键切换；可「新建工作区」（原生目录选择器）或删除。
 - **会话下拉** —— 展开可见当前工作区全部会话及相对更新时间，一键切换；可「新建会话」。
@@ -30,24 +30,25 @@
 
 ## 安装
 
-`dsh-better-session-title` 是一个**组合包（bundle）**——以包形式分发的配置补丁层（见 [DSH 官方插件发布文档](https://deepseek-harness.github.io/deepseek-harness/develop/basic/publish)）。用 `dsh plugin` 命令安装进 profile：它会自动链接包并追加到 `dsh.profile.bundles`：
+`dsh-better-session-topbar` 是一个**组合包（bundle）**——以包形式分发的配置补丁层（见 [DSH 官方插件发布文档](https://deepseek-harness.github.io/deepseek-harness/develop/basic/publish)）。用 `dsh plugin` 命令安装进 profile：它会自动链接包并追加到 `dsh.profile.bundles`：
 
 ```sh
-# 从 GitHub 安装（主分发渠道，v1.3.5 为当前发布 tag）
-dsh plugin --profile web add github:xinspark/dsh-better-session-title#v1.3.5
+# 从 GitHub 安装（主分发渠道，v1.3.6 为当前发布 tag）
+# 注意：仓库名仍是 dsh-better-session-title，包名是 dsh-better-session-topbar
+dsh plugin --profile web add github:xinspark/dsh-better-session-title#v1.3.6
 ```
 
 - **建议锁定 commit**：GitHub 安装拉取的是仓库源码，tag 之后的新推送不会自动影响已安装版本；如需把运行内容严格固定到某个提交，用 `github:xinspark/dsh-better-session-title#<commit-sha>`（官方文档推荐做法）。
-- **本地目录 / tarball**（开发或离线环境）：
+- **本地目录 / tarball**（开发或离线环境；目录名沿用仓库名，包名看 `package.json`）：
 
   ```sh
   dsh plugin --profile web add ./dsh-better-session-title
-  dsh plugin --profile web add ./dsh-better-session-title-1.3.5.tgz
+  dsh plugin --profile web add ./dsh-better-session-topbar-1.3.6.tgz
   ```
 
 然后启动 Web UI：`dsh web`（或 `dsh --profile web`）。首次 `add` 会自动用 `@deepseek-ai/dsh-base` 初始化 profile。
 
-卸载：`dsh plugin --profile web remove dsh-better-session-title`（同时移除依赖与组合层）。
+卸载：`dsh plugin --profile web remove dsh-better-session-topbar`（同时移除依赖与组合层；`dsh plugin` 认的是包名，不是仓库目录名）。
 
 插件的 bundle 补丁（`cordis.patch.yml`）会自动注册 host 与 client 两半。客户端按请求加载：客户端改动刷新页面即可，host 改动需要重启。
 
@@ -128,6 +129,8 @@ dsh plugin --profile web add github:xinspark/dsh-better-session-title#v1.3.5
 - **窄屏模式是枚举不是布尔** —— `narrowMode` 取 `'crumb' | 'title'`（host 端 `z.union([z.const(...), z.const(...)])`）。1.3.4 及更早存的是布尔 `narrowTitle`，字段改名后旧值会被 schema 丢弃，升级后回到默认「面包屑模式」，去详情页重选即可。
 - **选择器为什么不用 SegmentedControl** —— 原生 `SegmentedControl` 是 tablist→panel 语义（每个选项带 `aria-controls` 指向面板），这里没有面板，用它就会产出悬空的 `aria-controls`。详情页的两选一改用与 DSH 设置页「外观」三选一同一套方块（thumbnail/cube）：`.5px` 描边、`--dsw-radius-xl`、选中换 `--dsw-alias-bg-module-platform` + `--dsw-static-neutral-bluish-400`，`aria-pressed` 表达选择。
 - **窄屏标题态的几个不变量** —— ① 工作区级靠 `data-bst-level="ws"` 用 `display:none` 藏起，**不要**改成不渲染（`crumbNeed` 按 `.bst-crumb-btn` 数量推导，删掉会让阈值 285→151，出现「藏起来→放得下→再显示」的翻动）；② 这一态强制文本（`setIconic('')`），否则阶梯会把末级收成图标，与「标题」的语义冲突；③ 会话图标由 `span.bst-crumb-icon` 包着，只有标题态隐藏它，宽屏面包屑保留；④ 子智能体会话的「父 / 当前」在标题态还会再压一次：`per` 触底（=150）时父级变成原生上下箭头图标、宽度让给当前标题，`per` 回到 190 才展开 —— 图标是**例外**（`.bst-crumb-iconic .bst-crumb-icon` 在标题态要放回来），否则压缩后只剩一个空按钮。
+- **包名只能 ASCII，且三处必须同名** —— `package.json` 的 `name`、`cordis.patch.yml` 的行 id、`lib/client.js` 里 `__ModuleLoader__.load({ id })` 的 id 是同一个字符串：宿主按包名解析 bundle 并把工厂投递给浏览器，浏览器再按同 key 等待，不一致就是「永远等不到 / 导入失败」。界面上的中文名（更好的会话顶栏）只走 `locale/*.json` 的 `meta.title` 与 host 半的 `name` 显示串。**中文包名走不通**：实测 `npm install` 直接 `EINVALIDPACKAGENAME`（`name can only contain URL-friendly characters`），而 profile 的每一次 `dsh plugin add/remove` 都要过 npm。
+- **改包名后运行中的宿主不会自己收敛** —— profile 里 `dependencies` / `dsh.profile.bundles` / patch 行 id / `node_modules` 链接改完，磁盘状态就对了；但运行中的宿主仍组合着旧行（旧 bundle 的组合行不会因 `bundles` 移除而卸载），页面刷新会报「加载插件失败 / 1 条未激活 … 导入失败」，patch 里写 `disabled: true` 也压不住。**必须重启一次 app**（重启后旧行自然消失）。
 - **加一个设置项要动两处** —— host 半 `index.js` 的 `Config` schema 里声明字段并标 `.volatile()`（**只有 volatile 字段会进表单**，一个都没有时整行不出现）；客户端半在 `BstSettingsPage` 里加控件，读 `configForms.get(行 id)` 的快照、写同一个实例的 `set(field, value)`。顶栏那边读的是共享的 `bstSettings`，设置一变就重算。
 - **调整压缩阶梯** —— 阶梯是 `full → count → 图标 → icon`，阈值三个常量：`CRUMB_LEVEL_COST` / `CRUMB_SEP_COST`（按当前级数推出 `crumbNeed`，两级=285）、`CRUMB_ICON_NEED`（160，跌到它才把 chip 压成图标）、`CRUMB_TEXT_ADD`（136，展开的回差）。改字号 / padding / 图标尺寸要跟着重算，别写死某个整数。**不要**拿 `header.clientWidth` 做滞回：折叠往往由内容变化（改名、新 chip）引起，按 header 宽度记基准就再也解不开。三枚 chip 的度量在 `button[data-bst-chip]` 那组样式里，装饰（统计数、圆环、圆点的顺序）由 `data-bst-chip-*` 标记驱动。
 - **调整图标态阈值** —— 阈值是 `ICONIC_TEXT_FLOOR`（≈5 个汉字宽）：某级文本被截断且可见宽度低于它、或整条面包屑溢出，才换图标。两个坑：① 别用「标题超过该级 `max-width`」当判据 —— 那在宽窗口下也会命中（长标题本来就超上限），界面会莫名其妙地到处变图标；② 别假设"文本一定会被挤" —— 顶栏容器默认不可收缩，溢出会表现为被窗口边缘裁掉（见 `has(.bst-crumbs)` 那条让容器可收缩的样式）。

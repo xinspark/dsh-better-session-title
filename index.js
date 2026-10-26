@@ -13,9 +13,11 @@
 //      对 volatile 字段而言下一次读取即生效，无需重启。
 import z from '@deepseek-ai/schemastery'
 
-export const name = 'Better Session Topbar'
+export const name = '更好的会话顶栏'
 
-// 命名空间 = bundle 行的 id（`cordis.patch.yml` 里 insert 的 `dsh-better-session-title`）。
+// 命名空间 = 包名（package.json 的 name = `dsh-better-session-topbar`），也是 bundle 行 id：
+// 三者必须一致，否则设置读写的键对不上。包名只能用 ASCII（npm 拒绝 CJK 包名），
+// 中文名只出现在 locale 的 meta.title 和这里的 `name` 显示串上。
 // 默认值必须与 lib/client.js 里的 `bstSettings` 初值一致：面包屑 + 日志关 ——
 // 老用户升级后行为与 1.3.4 完全相同，控制台也保持安静。
 //

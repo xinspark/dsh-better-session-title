@@ -5,6 +5,14 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.6] - 2026-10-26
+
+### Changed
+
+- **The package itself was renamed to `dsh-better-session-topbar`** (1.3.5 had only renamed the *display* name). Everything that keys off the package name moved with it: `package.json` `name`, the inserted row id in `cordis.patch.yml`, the `plugins.row.config` slot key (`<pkg>#<row id>`), the `id` in `window.__ModuleLoader__.load({ id })` — which the host matches against the resolved package name — plus the profile dependency key, the `node_modules` link and `dsh.profile.bundles` entries in both local profiles. The GitHub repository keeps the old name `dsh-better-session-title`, so install commands and the README badge still point at it.
+- **Why the package name is not the Chinese display name.** A package name has to be URL-safe: `npm install` on `"name": "更好的会话顶栏"` fails with `EINVALIDPACKAGENAME` (`name can only contain URL-friendly characters`), and every `dsh plugin add` / `remove` in a profile shells out to npm, so a CJK name would break installation for everyone. The Chinese name therefore stays on the display layer (`locale/*.json` `meta.title`, host `name`), and the package takes the ASCII form of the same name.
+- **Upgrading from 1.3.5 (or earlier) needs one app restart.** The profile's Cordis patch still stores the pre-rename row id; the running host keeps that row in its live composition even after `dsh.profile.bundles` changes, so a page refresh reports "failed to load plugins / 1 entry did not activate … import failed" until the app is restarted. Renaming the row id in the patch is enough on disk — the row is simply absent on the next boot.
+
 ## [1.3.5] - 2026-10-26
 
 ### Changed
