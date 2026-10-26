@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "Better Session Title",
-    "description": "Replaces the session topbar title with a workspace/session breadcrumb, with quick switching, pinning, forking and archiving."
+    "title": "Better Session Topbar",
+    "description": "Replaces the session topbar title with a workspace/session breadcrumb, with quick switching, pinning, forking and archiving; narrow screens can show a breadcrumb or a session title."
   }
 }

@@ -5,6 +5,15 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.5] - 2026-10-26
+
+### Changed
+
+- **Renamed to 更好的会话顶栏 / Better Session Topbar.** The display name in the Plugins list now comes from the locale metadata (`locale/zh.json` / `locale/en.json`), and the host/client module names and the package description follow it. The package name stays `dsh-better-session-title`, so existing installs, patches and row keys keep working.
+- **The narrow-screen switch became a two-option selector.** The row is now 「窄屏会话标题显示选择」 and offers 面包屑模式 / 标题模式, each with its trade-offs written next to it, instead of a boolean switch whose "off" state had to be inferred. `narrowTitle: boolean` became `narrowMode: 'crumb' | 'title'` in the host `Config` (`z.union([z.const('crumb'), z.const('title')])`), so the Host validates the value and the client only accepts the two strings — a dirty value falls back to `'crumb'`. A profile that still stores the old `narrowTitle` will not match the new schema and comes back on the default breadcrumb display; pick the other option once on the plugin page.
+- **The selector is a native-shaped cube pair, not a `SegmentedControl`.** DSH's own appearance setting is a row of cubes (`aria-pressed`, `.5px` border, `--dsw-radius-xl`, selected background `--dsw-alias-bg-module-platform` with `--dsw-static-neutral-bluish-400`); this plugin reuses that anatomy and adds one line per option. `SegmentedControl` is tablist → panel semantics and would emit `aria-controls` references to panels that do not exist here.
+- **The plugin page is documented with its own screenshot**, and the README screenshots were all retaken on the same build (workspace dropdown, session dropdown, row more-menu, narrow title state, plugin page) so the images match what the current version renders.
+
 ## [1.3.4] - 2026-10-26
 
 ### Changed
