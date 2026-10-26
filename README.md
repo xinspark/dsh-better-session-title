@@ -62,6 +62,7 @@ dsh plugin --profile web add github:xinspark/dsh-better-session-title#v1.3.2
 | 会话下拉 | 当前工作区的会话列表（含相对时间元信息）、新建会话、行内更多：重命名 / 分支 / 归档会话。 |
 | 原生一致的交互 | 下拉为自绘层，卡片沿用原生菜单 token（`--dsw-elevation-prominent`、`--dsw-radius-lg`、`--dsw-menu-surface-fill` + `--dsw-menu-backdrop-filter`、hover 填充 `--dsw-alias-interactive-bg-hover`）；行内度量为 min-height 40 / padding 8·10 / 14px·22px（与原生 `AccountMenu` 的 `[role=menuitem]` 一致；原生 `Menu.module.css` 更紧凑，本插件未跟随）。更多菜单、重命名/删除对话框全部使用原生 `Menu` / `Modal` / `Button` / `Input`（autoFocus、全选、输入法组合 Enter 防误触、工作区重复名校验、错误行）。 |
 | 生命周期一致 | 更多菜单跟随其所在下拉同生命周期：下拉关闭（点击外部 / Escape / 选择 / 切换）时菜单一并关闭，不残留孤立菜单。 |
+| 插件详情页 | Plugins → 本插件 → 配置：**窄屏改用会话标题**（顶栏放不下完整面包屑时，收起面包屑改用原生会话标题，而不是收成图标）与**探针日志**开关。两项都是原生 Switch，即时生效，写入 profile 的 Cordis patch。 |
 | 双语言 | 内置 zh/en 双语言字典，跟随 DSH 语言切换实时生效。 |
 
 ## 截图
@@ -103,14 +104,17 @@ dsh plugin --profile web add github:xinspark/dsh-better-session-title#v1.3.2
   2. **双语字典**（`BST_ZH` / `BST_EN`）—— 注册进 `ctx.locale`，跟随语言切换；`bstT()` 带 fallback。
   3. **自绘下拉列表** `BstList` —— 沿用原生菜单样式与 token；定位避让视口边缘；`click` 外部关闭（不用 mousedown/pointerdown：它们先于 `click` 派发，会先行卸载列表、吃掉行内 click）。
   4. `WorkspaceTitleBreadcrumb` —— 注册进 `conversation.session.header.actions`（`order: -40`，顶栏最左）；逐级自适应图标态（该级标签被挤到可见宽度 < `ICONIC_TEXT_FLOOR` 才换图标）+ 三枚原生 chip 的装饰与宽度阶梯（判据全部来自实测可用宽度 `avail()`，**不使用** header 宽度滞回 —— 折叠常由改名/新 chip 引起，按 header 宽度记基准会折下去解不开）；更多菜单与下拉同生命周期；重命名/删除走原生 Modal。
-  5. `apply(ctx)` —— 样式注入 + 槽位注册；`inject: ['slots','workspaces','sessions','uiWorkspace','locale']`（服务依赖必须声明，否则 apply 抢跑会把 `undefined` 永久固化进所有动作，表现为「界面正常、点了没反应」）。
+  5. `apply(ctx)` —— 样式注入 + 槽位注册（顶栏面包屑 + 插件详情页）；`inject: ['slots','workspaces','sessions','uiWorkspace','locale','shortcuts']`（服务依赖必须声明，否则 apply 抢跑会把 `undefined` 永久固化进所有动作，表现为「界面正常、点了没反应」）。设置服务是**可选**依赖，走 `ctx.inject(['configForms'], …)` 子级：缺了只少一个设置界面，不影响面包屑。
 
 扩展速查：
 
 - **新增行操作** —— 在 `wsListItems` / `ssListItems` 的 `actions` 数组加一项（`{ id, label, icon?, danger?, action }`）。
 - **新增文案** —— 在 `BST_ZH` / `BST_EN` 字典加 key。
 - **调整下拉样式** —— 修改 `insertStyle` 中的 `.bst-item*` 规则（token 与原生 Menu 一致）。
-- **诊断日志默认关闭** —— 正常使用不往控制台写任何东西。排查现场时在开发者工具控制台执行 `localStorage.setItem('dsh-better-session-title:debug', '1')` 打开（取消该键即关闭，判定现读、不必刷新），三枚前缀分别是 `[bst-dom]`（结构探针）、`[bst-chip]`（chip 探测与阶梯结论）、`[bst-perf]`（单趟测量超过 60ms 才有的慢趟记录）。日志关着时连结构探针的测量都不跑。
+- **诊断日志默认关闭，开关在插件详情页** —— 正常使用不往控制台写任何东西。在 Plugins → 本插件 → 配置 里打开「探针日志」即可（即时生效，不必刷新），三枚前缀分别是 `[bst-dom]`（结构探针）、`[bst-chip]`（chip 探测与阶梯结论）、`[bst-perf]`（单趟测量超过 60ms 才有的慢趟记录）。日志关着时连结构探针的测量都不跑。写在 profile 的 `cordis.patch.yml` 里，跟随 profile。
+- **改完 host 半不用重启 app** —— 实机验证过的做法：客户端改动刷新页面即可；`index.js` 这类 host 改动在插件页把本行关掉再打开（`已关闭 → 运行中`）就会重新导入，新注册的 `Config` 立刻生效。
+- **schema 依赖 schemastery（peer）** —— host 半的 `Config` 用 `@deepseek-ai/schemastery` 构造，`package.json` 里声明为 peerDependencies（profile 根目录已随 DSH 提供）。**本地以 symlink 安装时**要注意：Node 默认按真实路径解析，插件会找不到 profile 下的这个包 —— 需要在仓库里放一个指向它的 `node_modules/@deepseek-ai/schemastery`（junction/symlink，`node_modules/` 已被 .gitignore 忽略）；真目录安装（`dsh plugin add`）不需要这一步。
+- **加一个设置项要动两处** —— host 半 `index.js` 的 `Config` schema 里声明字段并标 `.volatile()`（**只有 volatile 字段会进表单**，一个都没有时整行不出现）；客户端半在 `BstSettingsPage` 里加一行控件，读 `configForms.get(行 id)` 的快照、写同一个实例的 `set(field, value)`。顶栏那边读的是共享的 `bstSettings`，设置一变就重算。
 - **调整压缩阶梯** —— 阶梯是 `full → count → 图标 → icon`，阈值三个常量：`CRUMB_LEVEL_COST` / `CRUMB_SEP_COST`（按当前级数推出 `crumbNeed`，两级=285）、`CRUMB_ICON_NEED`（160，跌到它才把 chip 压成图标）、`CRUMB_TEXT_ADD`（136，展开的回差）。改字号 / padding / 图标尺寸要跟着重算，别写死某个整数。**不要**拿 `header.clientWidth` 做滞回：折叠往往由内容变化（改名、新 chip）引起，按 header 宽度记基准就再也解不开。三枚 chip 的度量在 `button[data-bst-chip]` 那组样式里，装饰（统计数、圆环、圆点的顺序）由 `data-bst-chip-*` 标记驱动。
 - **调整图标态阈值** —— 阈值是 `ICONIC_TEXT_FLOOR`（≈5 个汉字宽）：某级文本被截断且可见宽度低于它、或整条面包屑溢出，才换图标。两个坑：① 别用「标题超过该级 `max-width`」当判据 —— 那在宽窗口下也会命中（长标题本来就超上限），界面会莫名其妙地到处变图标；② 别假设"文本一定会被挤" —— 顶栏容器默认不可收缩，溢出会表现为被窗口边缘裁掉（见 `has(.bst-crumbs)` 那条让容器可收缩的样式）。
 - **给链上加一级** —— 只改 `bstSessionChain`（数据）即可；渲染端逐级同一段代码，图标按 `node.subagent` 取（子智能体级＝上下双箭头，其余＝会话字形），所以任何链长都不会出现「某级没有图标」的空洞。

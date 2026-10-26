@@ -5,6 +5,23 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.3] - 2026-10-26
+
+### Added
+
+- **A page for this plugin on the Plugins page** (Plugins → 本插件 → 配置), claiming the keyed `plugins.row.config` slot under `dsh-better-session-title#dsh-better-session-title`. Two settings, declared as `.volatile()` fields in the host half's `Config` schema so they are the only ones the form exposes, and persisted through the official settings line into the active profile's Cordis patch:
+  - **窄屏改用会话标题** — when the topbar can no longer hold the breadcrumb as text, hide it and let the native session title show instead of folding to icons (off by default: the breadcrumb keeps its icon state, exactly as in 1.3.2). The trade-off is deliberate and stated in the hint: while this state is active the two breadcrumb dropdowns are gone, so switching moves to the sidebar.
+  - **探针日志** — the `[bst-dom]` / `[bst-chip]` / `[bst-perf]` diagnostics, off by default.
+- Both settings apply without a reload (the page and the topbar share one `configForms` instance and subscribe to it), and the page locks its controls while a write is in flight or when the deployment reports the namespace read-only.
+
+### Changed
+
+- **Diagnostics are now switched from the page instead of a `localStorage` key**, so there is one source of truth and the setting follows the profile. Nothing is written to the renderer console while it is off.
+- **The measurement's "our left edge" no longer comes from our own box.** In title mode the breadcrumb is `display: none`, where `getBoundingClientRect()` returns zeros and would make the free width jump, flipping the ladder between hidden and shown. The edge is derived from the row (summing the siblings ahead of us) whenever we have no box, which is independent of our own width.
+- The host half now suppresses the auto-generated settings form with `settings.configure({ auto: false }, ctx.fiber)` inside an optional `ctx.inject(['settings'], …)` child, so the page is the only place these two settings appear.
+- The settings service is an **optional** dependency (`ctx.inject(['configForms'], …)`), not an `inject` entry: a composition without it loses the page, not the breadcrumb.
+- **A measurement that throws is no longer invisible.** The pass still swallows exceptions (the topbar must never break because one measurement failed), but with the probe on the stack now goes to the log as `[bst-error]`. Silence here cost real debugging time: a failing pass on resize produced only `[bst-perf]` and no `[bst-chip]`, which reads as "the measurement stopped running".
+
 ## [1.3.2] - 2026-10-26
 
 ### Added
