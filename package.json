@@ -1,6 +1,6 @@
 {
   "name": "dsh-better-session-topbar",
-  "version": "1.3.6",
+  "version": "1.3.7",
   "description": "更好的会话顶栏：工作区/会话面包屑、子智能体层级、窄屏面包屑/标题二选一 · Better Session Topbar",
   "icon": "./icon.svg",
   "license": "MIT",

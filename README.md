@@ -39,10 +39,10 @@ dsh plugin --profile web add github:xinspark/dsh-better-session-title#v1.3.6
 ```
 
 - **建议锁定 commit**：GitHub 安装拉取的是仓库源码，tag 之后的新推送不会自动影响已安装版本；如需把运行内容严格固定到某个提交，用 `github:xinspark/dsh-better-session-title#<commit-sha>`（官方文档推荐做法）。
-- **本地目录 / tarball**（开发或离线环境；目录名沿用仓库名，包名看 `package.json`）：
+- **本地目录 / tarball**（开发或离线环境；本地目录名与包名现在都是 `dsh-better-session-topbar`）：
 
   ```sh
-  dsh plugin --profile web add ./dsh-better-session-title
+  dsh plugin --profile web add ./dsh-better-session-topbar
   dsh plugin --profile web add ./dsh-better-session-topbar-1.3.6.tgz
   ```
 
@@ -116,7 +116,7 @@ dsh plugin --profile web add github:xinspark/dsh-better-session-title#v1.3.6
   2. **双语字典**（`BST_ZH` / `BST_EN`）—— 注册进 `ctx.locale`，跟随语言切换；`bstT()` 带 fallback。
   3. **自绘下拉列表** `BstList` —— 沿用原生菜单样式与 token；定位避让视口边缘；`click` 外部关闭（不用 mousedown/pointerdown：它们先于 `click` 派发，会先行卸载列表、吃掉行内 click）。
   4. `WorkspaceTitleBreadcrumb` —— 注册进 `conversation.session.header.actions`（`order: -40`，顶栏最左）；逐级自适应图标态（该级标签被挤到可见宽度 < `ICONIC_TEXT_FLOOR` 才换图标）+ 三枚原生 chip 的装饰与宽度阶梯（判据全部来自实测可用宽度 `avail()`，**不使用** header 宽度滞回 —— 折叠常由改名/新 chip 引起，按 header 宽度记基准会折下去解不开）；更多菜单与下拉同生命周期；重命名/删除走原生 Modal。
-  5. `apply(ctx)` —— 样式注入 + 槽位注册（顶栏面包屑 + 插件详情页）；`inject: ['slots','workspaces','sessions','uiWorkspace','locale','shortcuts']`（服务依赖必须声明，否则 apply 抢跑会把 `undefined` 永久固化进所有动作，表现为「界面正常、点了没反应」）。设置服务是**可选**依赖，走 `ctx.inject(['configForms'], …)` 子级：缺了只少一个设置界面，不影响面包屑。
+  5. `apply(ctx)` —— 样式注入 + 槽位注册（顶栏面包屑 + 插件详情页）；`inject: ['slots','workspaces','sessions','uiWorkspace','locale']`（服务依赖必须声明，否则 apply 抢跑会把 `undefined` 永久固化进所有动作，表现为「界面正常、点了没反应」）。设置服务与快捷键服务都是**可选**依赖，走 `ctx.inject([...], …)` 子级：缺了只少一个设置界面 / 只少按键提示，不影响面包屑。
 
 扩展速查：
 
@@ -137,6 +137,7 @@ dsh plugin --profile web add github:xinspark/dsh-better-session-title#v1.3.6
 - **给链上加一级** —— 只改 `bstSessionChain`（数据）即可；渲染端逐级同一段代码，图标按 `node.subagent` 取（子智能体级＝上下双箭头，其余＝会话字形），所以任何链长都不会出现「某级没有图标」的空洞。
 - **下拉必须 portal 到 `document.body`** —— 原地渲染会落在顶栏槽位里，被应用外壳的层叠上下文压住：外壳/聊天内容（含第三方插件注入的「复制」按钮）会盖在下拉上面，列表首行也可能被侧栏网格盖住。原生 `Menu` 的 `portal: true` 就是同一个理由。
 - **行动作行别用原生文案** —— 「手机口袋」类插件（实测 `dsh-pocket` 2.11.0 的 `hideWsEntries`）会全局扫描 `[role=menuitem]/[role=option]/li/button/a`，按文本**精确匹配** `添加工作区` / `Add workspace` 后写 `display:none`，并挂 MutationObserver 让新插入的节点同样被隐藏；沿用原生文案的那一行会被一并吃掉，看起来就是「下拉里少了一行」。自有文案（`新建工作区` / `New workspace`）即可避开。
+- **「添加工作区」要先探服务，别把 `invoke` 当成功** —— 官方把目录选择做成组合能力：`workspace.add` 只负责“打开流程”，真正的交互由 `sidebar.workspaces.directoryFlow` 槽里的 occupant 决定（原生桌面/原生 web 是官方 browse 面板，社区桌面是社区自己注入的 native 驱动）。`shortcuts.invoke` 在命令 blocked（槽空 / `directoryBusy`）时**静默返回、不抛错**，所以“调用没报错”不等于“界面出现了”。更麻烦的是社区版（DSH Desktop Next）把官方 `directoryPickerController` 整个换掉：桌面窗口靠 preload 桥 `__DSH_DIRECTORY_PICKER__` 弹系统「选择文件夹」，网页版连桥都没有；此时 `listDirectory` / `pickDirectory` 一律抛 `gateway/service-unavailable`。现行顺序：`listDirectory()` 探活（只列目录、无副作用）→ 服务活着就借宿主交互（原生命令 → `pickDirectory` → 自建面板）→ 服务死了只认 preload 桥 → 桥也没有就弹明确提示，**不要**降级成路径输入（用户明确否决过）。探针日志里搜 `[bst-picker]` 能看到每次走的哪条路。
 
 ## 特别感谢
 

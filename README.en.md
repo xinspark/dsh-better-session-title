@@ -39,10 +39,10 @@ dsh plugin --profile web add github:xinspark/dsh-better-session-title#v1.3.6
 ```
 
 - **Consider locking a commit**: a GitHub install pulls the repository source, so later pushes don't silently change what you run. To pin the exact content, use `github:xinspark/dsh-better-session-title#<commit-sha>` (as recommended by the official docs).
-- **Local directory / tarball** (development or offline; the directory keeps the repository name, the package name is in `package.json`):
+- **Local directory / tarball** (development or offline; the local folder and the package now share the name `dsh-better-session-topbar`):
 
   ```sh
-  dsh plugin --profile web add ./dsh-better-session-title
+  dsh plugin --profile web add ./dsh-better-session-topbar
   dsh plugin --profile web add ./dsh-better-session-topbar-1.3.6.tgz
   ```
 
@@ -116,7 +116,7 @@ This project is built on the official [deepseek-ai/deepseek-harness](https://git
   2. **Bilingual dictionaries** (`BST_ZH` / `BST_EN`) — registered into `ctx.locale`, following the language switch; `bstT()` falls back gracefully.
   3. **Self-drawn dropdown** `BstList` — native menu styling and tokens; viewport-aware positioning; outside close on `click` (not mousedown/pointerdown: those dispatch before `click`, unload the list first and swallow inline clicks).
   4. `WorkspaceTitleBreadcrumb` — registered into `conversation.session.header.actions` (`order: -40`, leftmost in the topbar); per-level icon fallback (a level drops its text only once the topbar squeezes it below `ICONIC_TEXT_FLOOR` of visible label width) plus the decoration and width ladder for the three native chips (every decision comes from the measured free width, `avail()`; **no** header-width hysteresis — folds are usually caused by a rename or a newly appeared chip, and a fold keyed on header width never comes back); the more menu shares the dropdown lifecycle; rename/delete use native Modals.
-  5. `apply(ctx)` — style injection + slot registrations (topbar breadcrumb and the plugin page); `inject: ['slots','workspaces','sessions','uiWorkspace','locale','shortcuts']` (declaring the service dependencies matters: if `apply` wins the race, `undefined` handles get captured permanently and every action dies silently while the UI still looks perfect). The settings service is an **optional** dependency, taken through a `ctx.inject(['configForms'], …)` child: without it you lose the page, not the breadcrumb.
+  5. `apply(ctx)` — style injection + slot registrations (topbar breadcrumb and the plugin page); `inject: ['slots','workspaces','sessions','uiWorkspace','locale']` (declaring the service dependencies matters: if `apply` wins the race, `undefined` handles get captured permanently and every action dies silently while the UI still looks perfect). The settings service and the shortcut service are **optional** dependencies taken through `ctx.inject([...], …)` children: without them you lose the settings page or the key hints, not the breadcrumb.
 
 Quick reference:
 
@@ -137,6 +137,7 @@ Quick reference:
 - **Add another chain level** — change `bstSessionChain` (data) only; the render path is one shared block per level, with the icon picked by `node.subagent` (subagent = up/down chevrons, otherwise the session glyph), so no chain length can produce a level without an icon.
 - **The dropdown must be portaled into `document.body`** — rendered in place inside the topbar slot it sits in the header's stacking context, so page content (including a third-party plugin's injected `复制` button) paints over it, and the app shell's sidebar column can cover its first row. The native `Menu`'s `portal: true` exists for the same reason.
 - **Do not reuse the native wording for action rows** — "mobile pocket" plugins (measured: `dsh-pocket` 2.11.0 `hideWsEntries`) scan every `[role=menuitem]`/`[role=option]`/`li`/`button`/`a` and hide the ones whose text **exactly** matches `添加工作区` / `Add workspace`, with a `MutationObserver` that keeps newly inserted nodes hidden too. Reusing the native label made that row vanish from our dropdown; keeping our own wording (`新建工作区` / `New workspace`) avoids it.
+- **Probe the picker service before adding a workspace; never treat `invoke` as success** — the directory choice is a composed capability: `workspace.add` only opens the flow, and the real interaction is the occupant of the `sidebar.workspaces.directoryFlow` hole (the official browse panel on native desktop/web, the community build's own native driver on its desktop window). `shortcuts.invoke` returns silently when the command is blocked (empty hole / `directoryBusy`), so "no exception" does not mean "UI appeared". Worse, DSH Desktop Next replaces the official `directoryPickerController` entirely: its desktop window opens the OS chooser through the preload bridge `__DSH_DIRECTORY_PICKER__`, while its web build has neither service nor bridge — there `listDirectory` / `pickDirectory` both throw `gateway/service-unavailable`. Current order: probe with `listDirectory()` (no side effects) → service alive: borrow the host's interaction (native command → `pickDirectory` → our own panel) → service dead: only the preload bridge → no bridge: report it plainly. Do **not** degrade to a path-input fallback (the user rejected that). `[bst-picker]` in the probe log names the branch that ran.
 
 ## Acknowledgments
 

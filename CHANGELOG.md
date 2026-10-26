@@ -5,6 +5,15 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.7] - 2026-10-26
+
+### Fixed
+
+- **「添加工作区」不再在换掉目录选择服务的宿主上走进死路。** DSH Desktop Next（社区版）把官方的 `directoryPickerController` 整个换掉了：桌面窗口靠 preload 桥 `__DSH_DIRECTORY_PICKER__` 弹系统「选择文件夹」，网页版连桥都没有。插件原来只按顺序试「原生命令 → `pickDirectory` → 自建面板」，三条都建在那条已经不存在的服务上，于是面板一打开就报 `directory browse failed: gateway/service-unavailable … active Service "directoryPickerController" is unavailable`，而且原生命令被 blocked 时 `shortcuts.invoke` **静默返回、不抛错**，插件却把它当成成功直接 return。
+- **链路的判定依据从「命令有没有被调用」改成「宿主还有没有能力」**：先 `listDirectory()` 探活（只列目录、不开窗，无副作用，社区版上它就是抛 `service-unavailable` 的那条）。服务活着 → 借宿主自己的交互（原生桌面/原生 web 的官方 browse 面板），槽空再走 `pickDirectory`，最后才开自建面板；服务死了 → 只认 preload 桥（有桥就用桥，与社区桌面自己的入口一致）；桥也没有（社区版网页版）→ 明确提示「当前宿主没有提供目录选择服务」，不再装作能用、也不降级成路径输入。
+- **`shortcuts` 不再是硬依赖。** 它只用于「更多」菜单里的快捷键提示，却被写进了 cordis 的 `inject`：缺少该服务的第三方发行版上，整个插件（连面包屑）都不会 apply。现在改走 `ctx.inject` 子级，缺席时只少一处按键提示。
+- **探针日志多一档 `[bst-picker]`**：记录这次「添加工作区」走的是哪条路（服务活/死、槽占用数、桥有无），下次遇到新发行版不用再猜。
+
 ## [1.3.6] - 2026-10-26
 
 ### Changed
