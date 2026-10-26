@@ -81,6 +81,10 @@ dsh plugin --profile web add github:xinspark/dsh-better-session-title#v1.3.5
 
 ![会话更多菜单](docs/screenshots/session-more-menu.png)
 
+**子智能体层级面包屑**——进入子智能体会话时自动扩展为「工作区 / 父会话 / 子智能体会话」，祖先级可点跳回，末级点开是兄弟子智能体：
+
+![子智能体面包屑](docs/screenshots/subagent-crumb.png)
+
 **窄屏 · 标题模式**——顶栏放不下完整面包屑时，整行只留当前会话标题（点开仍是同一套会话列表与行内操作）：
 
 ![窄屏标题模式](docs/screenshots/narrow-title.png)

@@ -81,6 +81,10 @@ The bundle patch (`cordis.patch.yml`) registers both the host and client halves 
 
 ![Session more menu](docs/screenshots/session-more-menu.png)
 
+**Subagent ancestry crumb** — inside a subagent session the breadcrumb grows to "Workspace / parent / subagent session"; ancestors navigate back and the last level opens the sibling subagents:
+
+![Subagent crumb](docs/screenshots/subagent-crumb.png)
+
 **Narrow screen, session-title display** — once the full breadcrumb no longer fits, the row keeps only the current session title (clicking it opens the same session list and inline actions):
 
 ![Narrow session title](docs/screenshots/narrow-title.png)
