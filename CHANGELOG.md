@@ -5,6 +5,21 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.4] - 2026-10-26
+
+### Changed
+
+- **The narrow-screen 「会话标题」 state is now our own session crumb instead of the native inert line.** It is modelled on the breadcrumb's last level minus the session icon: title text + chevron, hover fill, `title` tooltip with the full name, and a click that opens the same dropdown the breadcrumb opens (session list for a plain session, the sibling-subagent switcher for a subagent session), with the same inline rename / fork / archive / pin / copy-ID rows. The native `nav` stays hidden again, so the 1.3.3 guards that revealed it are gone.
+- **Subagent sessions keep the parent level** (`父会话 / 当前子会话`, both without icons, the parent still navigates back) — dropping it would leave the sidebar as the only way back to the parent.
+- **The workspace level is hidden with `display: none` rather than removed from the tree.** `crumbNeed` is derived from the number of crumb buttons, so removing it would drop the threshold from 285 to 151 and the layout would flap between hidden and shown.
+- **Title state forces the text form.** It only happens once the full breadcrumb no longer fits as text, where the ladder's next step would be icons — and the point of this state is a title, not a glyph.
+- **The parent level compresses to a glyph before the title does.** Inside a subagent session the title state shows `父 / 当前`; when the title budget bottoms out (`per` at its 150px floor) the parent collapses to the native up/down switcher glyph (16px, the same one DSH's own switcher uses) with its full name kept in `title` / the accessible name, and it expands again only once `per` climbs back to 190 — the 40px band is what stops it flapping. The decision reads `per`, which comes from `avail()`, and `avail()` excludes our own width, so collapsing the parent cannot change the decision that collapsed it.
+- **Escape returns focus to the trigger** after closing the dropdown; an outside click does not (that would steal focus from whatever the user just clicked).
+
+### Fixed
+
+- The dropdown could close on Escape and leave focus nowhere — the next Tab started from the top of the page instead of the crumb.
+
 ## [1.3.3] - 2026-10-26
 
 ### Added
