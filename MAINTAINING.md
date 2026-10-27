@@ -46,7 +46,7 @@
 ## 6. 当前待办（2026-10-28）
 
 - [x] **v1.4.0 发布**（2026-10-27）：tag `v1.4.0` → `a9ab1fe`，GitHub Release 已建，远端 `main` = `1738c3d`（含 MAINTAINING 本文）。
-- [x] **市场条目**：`awesome-dsh-plugin` 上游已是最新描述（同度量对话框 + 系统选择器）。
-- [ ] **v1.5.0 发布**：本地已提交并打好本地 tag（跟随 DSH NEXT 2.0.20 / Harness 0.2.1-rc.3；「添加工作区」改为完全交给宿主，删除自绘面板与目录流接管），待批准后 `git push`、推 tag、建 Release（内容取 CHANGELOG 的 1.5.0 节）。
-- [ ] **干净 profile 验收**：在 `bst-release-check` 里实装 tag 版本点一遍 —— desktop 是 `link:`，永远跑工作树，不能当 tag 内容的证据。
-- [ ] **rc.3 实机回归**：顶栏 / 两个下拉 / 添加工作区（社区桌面应弹系统「选择文件夹」）/ 插件详情页各点一次。
+- [x] **v1.5.0 发布**（2026-10-28）：tag `v1.5.0` → `e3ba1d9`（快进自 `1738c3d`，无需 force），远端 `main` = `e3ba1d9`；Release <https://github.com/xinspark/dsh-better-session-title/releases/tag/v1.5.0>（非 draft / 非 prerelease，正文取 CHANGELOG 1.5.0 节）。内容：跟随 DSH NEXT 2.0.20 / Harness 0.2.1-rc.3，「添加工作区」完全交给宿主，删除自绘面板与目录流接管；新增 `npm test` 渲染冒烟。
+- [x] **市场条目**：`_awesome/data/plugins/xinspark__dsh-better-session-title.yml` 只描述面包屑与下拉切换（未提对话框/选择器），1.5.0 的改动不影响其文案；`maintainer_market_validate` 报 0 error / 0 warning。**不需要改条目**。
+- [ ] **干净 profile 验收**：`bst-release-check` 仍钉在 `github:...#v1.2.0`。按 §2 维护者不改 profile 的插件集合，需要所有者执行一次 `dsh plugin --profile bst-release-check add github:xinspark/dsh-better-session-title#v1.5.0` 再点一遍 —— desktop / work-exp 都是 `link:`，永远跑工作树，不能当 tag 内容的证据。
+- [ ] **rc.3 实机回归**：顶栏 / 两个下拉 / 添加工作区（应直接弹系统「选择文件夹」，且不再出现插件自绘的 680×500 面板）/ 插件详情页各点一次。
