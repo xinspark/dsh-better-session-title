@@ -5,6 +5,30 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2026-10-28
+
+「添加工作区」改为**完全交给宿主**：删除插件自绘的目录面板与 `priority:-1` 的目录流接管，行为与原生 DSH 一致 —— native 宿主直接弹系统「选择文件夹」，browse 宿主用官方应用内面板。
+
+### Changed
+
+- **删除插件自绘的「选择工作区目录」面板**（680×500 的 headless Modal、米勒式单列列表、内联新建文件夹、页脚系统选择按钮）。它与原生并不等价（官方是米勒列 + 单独的新建文件夹对话框），而且只在 browse 后端可用；win32/darwin 本地解析成 native 后端，`listDirectory()` 必抛「needs the browse capability」，那套面板本来就打不开。
+- **删除目录流接管**：`BstDirectoryTakeover`、`bst:take-over-add-workspace` 事件、`priority:-1` 占用者、`topOccupant` 让位判定一并移除。插件不再遮蔽官方 browse 面板，也不再与社区桌面的 `NativeDirectoryFlow` 争同一个槽。
+- **「添加工作区」现在只有两条路**：① 槽里有 occupant → 调宿主 `workspace.add`，由宿主决定交互（native = 系统选择器；browse = 官方应用内面板）；② 槽空（极少见）→ preload 桥 `__DSH_DIRECTORY_PICKER__` → `uiWorkspace.pickDirectory()` → 明确报错。系统对话框是模态的，重复点击由 `pickerOpening` 挡住。
+- **随之删除**：`listDirectory` / `createDirectory` 的调用与探活、`.bst-picker*` 样式、`picker.*` 字典键、仅面板用到的 5 个图标导入。
+
+### Added
+
+- **`npm test` 渲染冒烟**（`test/render-smoke.cjs`）：用桩 React / primitives 执行工厂与面包屑、设置页的渲染体，能在提交前抓住「删了代码但还有悬空引用」。不验外观，也不进 npm 包（`files` 白名单不含 `test/`）。
+
+### Kept
+
+- 顶栏面包屑、两个下拉、会话/工作区行内操作、插件详情页、chip 归一与压缩阶梯、窄屏两态全部不变。
+- DSH NEXT 2.0.20 / Harness 0.2.1-rc.3 的同步结论仍成立：同槽原生项顺序（rc.3 新增 `cost-meter-statistics`）、社区桌面用 `priority:-1` 的 `NativeDirectoryFlow` 接管目录流、`dsh-host-directory-picker-auto` 在 win32/darwin 本地解析成 native。
+
+### Docs
+
+- README 双语、`lib/client.js` 顶部维护清单、MAINTAINING 待办同步为「不自绘面板、不接管目录流」，并保留「原生桌面直接进系统选择器」的验收判据。
+
 ## [1.4.0] - 2026-10-27
 
 「添加工作区」这一条链路整体重做：从「照抄一个对话框」升级成「按宿主能力分配交互 + 与官方同度量 + 可接管原生弹窗」。1.3.7 未发布，内容并入本节。

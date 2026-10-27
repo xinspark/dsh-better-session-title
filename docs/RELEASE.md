@@ -1,7 +1,10 @@
-# 发布清单（v1.2.0）
+# 发布清单（v1.2.0 · 历史存档）
 
+> **本文只描述 v1.2.0 那一次发布，已被 `MAINTAINING.md` 的发版流程 + `CHANGELOG.md` 取代。**
+> 后续版本（1.3.x / 1.4.x）按 MAINTAINING 执行；本文保留作当时环境（0.2.0-rc.2、代理/TLS 细节）的记录。
+>
 > 面向发布执行者（人或 agent）。`docs/` **不在** npm `files` 白名单里 —— 本文不会发进包。
-> 主分发渠道：**GitHub Release + tag**（README 的安装指令引用 `#v1.2.0`）。
+> 主分发渠道：**GitHub Release + tag**（README 的安装指令引用当前 tag）。
 > 验证基线：DSH **0.2.0-rc.2**（`@deepseek-ai/dsh-client-ui-primitives` 与 app 依赖一致）。
 >
 > **包名已变更（1.3.6）**：包名从 `dsh-better-session-title` 改为 **`dsh-better-session-topbar`**，仓库名不变（GitHub 地址、安装命令里的仓库路径照旧）。本文line 36 / 44 的 npm 发布与卸载命令按新包名理解；旧名在 npmjs 上仍为 404，但它已不是本包的包名。另注意：**改包名后运行中的宿主必须重启一次**才收敛（旧行留在内存组合里会报导入失败），详见 CHANGELOG 1.3.6。

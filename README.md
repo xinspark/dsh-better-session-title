@@ -13,11 +13,11 @@
 
 <h3 align="center">把 DSH 顶栏的会话标题换成「工作区 / 会话」两级面包屑，切换入口直接放在顶栏</h3>
 
-<p align="center"><a href="#安装"><ins><code>dsh plugin --profile web add github:xinspark/dsh-better-session-title#v1.4.0</code></ins></a></p>
+<p align="center"><a href="#安装"><ins><code>dsh plugin --profile web add github:xinspark/dsh-better-session-title#v1.5.0</code></ins></a></p>
 
 更好的会话顶栏（包名 `dsh-better-session-topbar`，仓库沿用 `dsh-better-session-title`）是面向 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 的**会话顶栏增强插件**——纯 UI 增强，不引入新能力，不改任何系统源码。DSH 原生顶栏中央只显示会话标题（层级面包屑），工作区/会话的切换入口在左侧边栏；侧边栏收起时，每次切换都要额外点击。本插件把切换入口直接放进顶栏：
 
-- **工作区下拉** —— 展开可见全部工作区及其会话数，一键切换；可「添加工作区」（插件对话框，与官方同度量；页脚「用系统选择器选择」可转系统文件夹对话框）或删除。
+- **工作区下拉** —— 展开可见全部工作区及其会话数，一键切换；可「添加工作区」（直接交给宿主的目录选择：native 桌面就是系统「选择文件夹」，browse 宿主是官方应用内面板）或删除。
 - **会话下拉** —— 展开可见当前工作区全部会话及相对更新时间，一键切换；可「新建会话」。
 - **顶栏三枚原生 chip 一并对齐** —— 子智能体 / 智能体团队 / 后台任务与面包屑用同一套度量（字号、内距、圆角、悬停、图标尺寸），并按固定次序让出宽度：chip 交数字 → 标题让位收成图标 → chip 收成图标。
 - **窄屏二选一** —— 空间真的不够时，可以选「面包屑模式」（收成图标，层级与切换都还在）或「标题模式」（整行只留会话标题）；两种模式的取舍写在插件详情页的选项旁。
@@ -26,16 +26,16 @@
 
 支持 **Windows · macOS · Linux**（DSH Web GUI）——纯 JavaScript，无原生依赖，分发无需构建步骤。
 
-> 验证基线：**DeepSeek Harness 0.2.1-rc.2**（DSH NEXT Desktop 与 `dsh web`）；1.2.1 起同时兼容 0.2.0-rc.2。其它版本未经验证。
+> 验证基线：**DSH NEXT 2.0.20（内置 DeepSeek Harness 0.2.1-rc.3）** 与 `dsh web`；0.2.1-rc.2、0.2.0-rc.2 仍在兼容范围内。其它版本未经验证。
 
 ## 安装
 
 `dsh-better-session-topbar` 是一个**组合包（bundle）**——以包形式分发的配置补丁层（见 [DSH 官方插件发布文档](https://deepseek-harness.github.io/deepseek-harness/develop/basic/publish)）。用 `dsh plugin` 命令安装进 profile：它会自动链接包并追加到 `dsh.profile.bundles`：
 
 ```sh
-# 从 GitHub 安装（主分发渠道，v1.4.0 为当前发布 tag）
+# 从 GitHub 安装（主分发渠道，v1.5.0 为当前发布 tag）
 # 注意：仓库名仍是 dsh-better-session-title，包名是 dsh-better-session-topbar
-dsh plugin --profile web add github:xinspark/dsh-better-session-title#v1.4.0
+dsh plugin --profile web add github:xinspark/dsh-better-session-title#v1.5.0
 ```
 
 - **建议锁定 commit**：GitHub 安装拉取的是仓库源码，tag 之后的新推送不会自动影响已安装版本；如需把运行内容严格固定到某个提交，用 `github:xinspark/dsh-better-session-title#<commit-sha>`（官方文档推荐做法）。
@@ -43,7 +43,7 @@ dsh plugin --profile web add github:xinspark/dsh-better-session-title#v1.4.0
 
   ```sh
   dsh plugin --profile web add ./dsh-better-session-topbar
-  dsh plugin --profile web add ./dsh-better-session-topbar-1.4.0.tgz
+  dsh plugin --profile web add ./dsh-better-session-topbar-1.5.0.tgz
   ```
 
 然后启动 Web UI：`dsh web`（或 `dsh --profile web`）。首次 `add` 会自动用 `@deepseek-ai/dsh-base` 初始化 profile。
@@ -61,7 +61,7 @@ dsh plugin --profile web add github:xinspark/dsh-better-session-title#v1.4.0
 | 逐级压缩 | 顶栏放不下时按固定次序让位：三枚原生 chip（子智能体 / 智能体团队 / 后台任务）先 `full → count`（文字换成 `(N)`）→ **面包屑整条收成图标**（统计数留着，长标题最不值钱）→ chip 再 `count → icon`。判据是实测的可用宽度，不记顶栏宽度做滞回 —— 标题变短、chip 消失后会自己展开回来。 |
 | 窄屏显示方式 | 插件详情页二选一：**面包屑模式**（默认，保留「工作区 / 会话」层级，收成图标后仍可逐级点开切换，代价是最窄时只剩图标、标题全文要悬停或点开才看得到）或**标题模式**（整行只留当前会话标题，子智能体会话保留「父 / 当前」，长标题更完整，代价是工作区与切换收进下拉、极窄时父级变成上下箭头图标）。两种选择都在同一个折叠点上生效，切换即时预览。 |
 | 三枚 chip 同构 | 子智能体 / 智能体团队 / 后台任务统一成「图标 · 文字 · (N) · 圆环 · 箭头」：12px/18 字号、`3px 7px` 内距、5px 间距、28px 高、14px 图标、12px 箭头、圆角与悬停填充一致；原生缺的补上（智能体团队补成员数与运行中圆环，圆环与官方 spinner 同相），原生多出来的归位（后台任务的运行圆点移到统计数之后）。 |
-| 工作区下拉 | 工作区列表（含会话数元信息）、添加工作区（插件对话框；页脚可转系统选择器）、行内更多：重命名 / 删除工作区。 |
+| 工作区下拉 | 工作区列表（含会话数元信息）、添加工作区（交给宿主目录选择，与侧栏 + 一致）、行内更多：重命名 / 删除工作区。 |
 | 会话下拉 | 当前工作区的会话列表（含相对时间元信息）、新建会话、行内更多：重命名 / 分支 / 归档会话。 |
 | 原生一致的交互 | 下拉为自绘层，卡片沿用原生菜单 token（`--dsw-elevation-prominent`、`--dsw-radius-lg`、`--dsw-menu-surface-fill` + `--dsw-menu-backdrop-filter`、hover 填充 `--dsw-alias-interactive-bg-hover`）；行内度量为 min-height 40 / padding 8·10 / 14px·22px（与原生 `AccountMenu` 的 `[role=menuitem]` 一致；原生 `Menu.module.css` 更紧凑，本插件未跟随）。更多菜单、重命名/删除对话框全部使用原生 `Menu` / `Modal` / `Button` / `Input`（autoFocus、全选、输入法组合 Enter 防误触、工作区重复名校验、错误行）。 |
 | 生命周期一致 | 更多菜单跟随其所在下拉同生命周期：下拉关闭（点击外部 / Escape / 选择 / 切换）时菜单一并关闭，不残留孤立菜单。 |
@@ -118,6 +118,8 @@ dsh plugin --profile web add github:xinspark/dsh-better-session-title#v1.4.0
   4. `WorkspaceTitleBreadcrumb` —— 注册进 `conversation.session.header.actions`（`order: -40`，顶栏最左）；逐级自适应图标态（该级标签被挤到可见宽度 < `ICONIC_TEXT_FLOOR` 才换图标）+ 三枚原生 chip 的装饰与宽度阶梯（判据全部来自实测可用宽度 `avail()`，**不使用** header 宽度滞回 —— 折叠常由改名/新 chip 引起，按 header 宽度记基准会折下去解不开）；更多菜单与下拉同生命周期；重命名/删除走原生 Modal。
   5. `apply(ctx)` —— 样式注入 + 槽位注册（顶栏面包屑 + 插件详情页）；`inject: ['slots','workspaces','sessions','uiWorkspace','locale']`（服务依赖必须声明，否则 apply 抢跑会把 `undefined` 永久固化进所有动作，表现为「界面正常、点了没反应」）。设置服务与快捷键服务都是**可选**依赖，走 `ctx.inject([...], …)` 子级：缺了只少一个设置界面 / 只少按键提示，不影响面包屑。
 
+- **改动后的最低验证** —— `npm test`（`test/render-smoke.cjs`：用桩 React/primitives 执行工厂与面包屑、设置页的渲染体，能抓住「删了代码但还有悬空引用」这类错误；它不验外观）。发布前仍要按「DSH 升级维护清单」实机点一遍。
+
 扩展速查：
 
 - **新增行操作** —— 在 `wsListItems` / `ssListItems` 的 `actions` 数组加一项（`{ id, label, icon?, danger?, action }`）。
@@ -136,10 +138,8 @@ dsh plugin --profile web add github:xinspark/dsh-better-session-title#v1.4.0
 - **调整图标态阈值** —— 阈值是 `ICONIC_TEXT_FLOOR`（≈5 个汉字宽）：某级文本被截断且可见宽度低于它、或整条面包屑溢出，才换图标。两个坑：① 别用「标题超过该级 `max-width`」当判据 —— 那在宽窗口下也会命中（长标题本来就超上限），界面会莫名其妙地到处变图标；② 别假设"文本一定会被挤" —— 顶栏容器默认不可收缩，溢出会表现为被窗口边缘裁掉（见 `has(.bst-crumbs)` 那条让容器可收缩的样式）。
 - **给链上加一级** —— 只改 `bstSessionChain`（数据）即可；渲染端逐级同一段代码，图标按 `node.subagent` 取（子智能体级＝上下双箭头，其余＝会话字形），所以任何链长都不会出现「某级没有图标」的空洞。
 - **下拉必须 portal 到 `document.body`** —— 原地渲染会落在顶栏槽位里，被应用外壳的层叠上下文压住：外壳/聊天内容（含第三方插件注入的「复制」按钮）会盖在下拉上面，列表首行也可能被侧栏网格盖住。原生 `Menu` 的 `portal: true` 就是同一个理由。
-- **行动作行别用原生文案** —— 「手机口袋」类插件（实测 `dsh-pocket` 2.11.0 的 `hideWsEntries`）会全局扫描 `[role=menuitem]/[role=option]/li/button/a`，按文本**精确匹配** `添加工作区` / `Add workspace` 后写 `display:none`，并挂 MutationObserver 让新插入的节点同样被隐藏；沿用原生文案的那一行会被一并吃掉，看起来就是「下拉里少了一行」。自有文案（`新建工作区` / `New workspace`）即可避开。
-- **「添加工作区」要先探服务，别把 `invoke` 当成功** —— 官方把目录选择做成组合能力：`workspace.add` 只负责“打开流程”，真正的交互由 `sidebar.workspaces.directoryFlow` 槽里的 occupant 决定（原生桌面/原生 web 是官方 browse 面板，社区桌面是社区自己注入的 native 驱动）。`shortcuts.invoke` 在命令 blocked（槽空 / `directoryBusy`）时**静默返回、不抛错**，所以“调用没报错”不等于“界面出现了”。更麻烦的是社区版（DSH Desktop Next）把官方 `directoryPickerController` 整个换掉：桌面窗口靠 preload 桥 `__DSH_DIRECTORY_PICKER__` 弹系统「选择文件夹」，网页版连桥都没有；此时 `listDirectory` / `pickDirectory` 一律抛 `gateway/service-unavailable`。现行顺序：`listDirectory()` 探活（只列目录、无副作用）→ 服务活着就借宿主交互（原生命令 → `pickDirectory` → 自建面板）→ 服务死了只认 preload 桥 → 桥也没有就弹明确提示，**不要**降级成路径输入（用户明确否决过）。探针日志里搜 `[bst-picker]` 能看到每次走的哪条路。
-- **自建对话框必须照官方度量，别自己发明** —— 对齐 `dsh-client-ui-directory-picker-browse` 时用的是 `headless` Modal + 自绘 header/content/footer：dialog `680×500`、header `16/14/8/24` + `.5px` 下边框、content `16/16/16/24`、footer `16/24` + `.5px` 上边框、`footerAction` 最小宽 72、「显示隐藏文件」是无边框文字开关。差一项，和原生并排就一眼看出来。
-- **「系统选择」按钮只在有 preload 桥时渲染** —— `__DSH_DESKTOP_PICK_DIRECTORY__`（官方桌面）或 `__DSH_DIRECTORY_PICKER__`（社区/官方 preload）存在才给按钮；不要拿 `uiWorkspace.pickDirectory` 兜底：自建面板只在 browse 后端打开，那里 `pick` 必然抛「needs the native capability」，按钮就成了“点了必报错”。文案三平台共用一条（用系统选择器选择 / Choose with the system picker）——系统对话框长什么样由宿主与 preload 桥在 Windows / macOS / Linux 上各自决定，插件不按平台分叉。
+- **行动作行别用原生文案（当组合里有「手机口袋」类插件时）** —— 实测 `dsh-pocket` 2.11.0 的 `hideWsEntries` 会全局扫描 `[role=menuitem]/[role=option]/li/button/a`，按文本**精确匹配** `添加工作区` / `Add workspace` 后写 `display:none`，并挂 MutationObserver 让新插入的节点同样被隐藏；沿用原生文案的那一行会被一并吃掉，看起来就是「下拉里少了一行」。改自有文案（`新建工作区` / `New workspace`）即可避开。本机组合里没有该插件，所以当前刻意用回原生文案（用户要求）；若哪天装了它，把行动作行改成自有文案。
+- **「添加工作区」完全交给宿主，插件不自绘面板** —— 侧栏 `WorkspacePickFlow` 是 `addOnly:true`，`open` 升起后直接展开 `sidebar.workspaces.directoryFlow`，由宿主的 occupant 决定交互：native 后端（win32/darwin 本地）是官方 renderless 的 `NativeDirectoryFlow`，直接弹系统「选择文件夹」；browse 后端是官方应用内面板。插件只调 `workspace.add`。槽空（极少见）时兜底：preload 桥 `__DSH_DIRECTORY_PICKER__` → `uiWorkspace.pickDirectory()` → 明确报错；不自绘面板、不降级成路径输入。1.5.0 起删除了旧的自绘面板与 `priority:-1` 接管。探针日志搜 `[bst-picker]` 能看到走的是宿主流程还是兜底。
 
 ## DSH 升级维护清单
 
@@ -148,12 +148,11 @@ dsh plugin --profile web add github:xinspark/dsh-better-session-title#v1.4.0
 | 检查项 | 位置 | 升级后怎么验 |
 | --- | --- | --- |
 | 包名三处一致 | `package.json` name / `cordis.patch.yml` 行 id / `__ModuleLoader__.load({id})` | 插件列表能加载、无「导入失败」 |
-| 槽位名 | `conversation.session.header.actions`、`sidebar.workspaces.directoryFlow`、`conversation.hero.workspace.directoryFlow`、`plugins.row.config` | `cordis_inspect_query` 看名字与 props 是否还在 |
+| 槽位名 | `conversation.session.header.actions`、`sidebar.workspaces.directoryFlow`、`conversation.hero.workspace.directoryFlow`、`plugins.row.config` | `cordis_inspect_query` 看名字与 props 是否还在；同槽原生项顺序会变（rc.3：team -20、preset -10、cost-meter 1、subagent-catalog 10、job-list 20），本插件只依赖自己的 -40 |
 | 服务依赖 | 必需 `slots` / `workspaces` / `sessions` / `uiWorkspace` / `locale`；可选 `shortcuts` / `configForms` | 下拉动作可用、设置页存在 |
-| 目录选择交互 | browse 面板 / native 系统对话框；桥 `__DSH_DESKTOP_PICK_DIRECTORY__`、`__DSH_DIRECTORY_PICKER__`；社区版 `priority:-1` occupant | 桌面窗口 / 网页 / 社区桌面 / 社区网页 四种组合各点一次 |
-| 对话框度量 | 官方 `DirectoryBrowser.module.css`：680×500、header 16/14/8/24、footer 16/24、`footerAction` 72 | 与原生并排比一次 |
+| 目录选择交互 | 插件**不接管、不自绘**：`workspace.add` → 宿主 occupant（native = 官方 renderless → 系统选择器；browse = 官方应用内面板）；槽空时才兜底 preload 桥 `__DSH_DIRECTORY_PICKER__` / `pickDirectory()` | 四种组合各点一次「添加工作区」：native 宿主应直接见系统对话框，browse 宿主应见官方应用内面板 |
 | 顶栏 DOM 锚点 | `header[data-window-drag]` + `nav:has(~ div .bst-crumbs)`（0.2.0 的 `data-conversation-*` 已移除） | 原生标题被隐藏、窄屏切换正常 |
-| primitives 组件 | `Modal({headless})` / `Button` / `Input` / `Menu` / `*Regular` 图标 | 两个对话框与插件设置页各点开一次 |
+| primitives 组件 | `Modal` / `Button` / `Input` / `Menu` / `Switch` / `*Regular` 图标 | 重命名/删除对话框与插件设置页各点开一次 |
 | 文案键 | 与原生菜单对齐（添加工作区 / 新会话 / 分支会话） | 中英各看一次 |
 
 ## 特别感谢

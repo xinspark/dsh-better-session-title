@@ -13,11 +13,11 @@
 
 <h3 align="center">Replace the DSH topbar session title with a two-level "Workspace / Session" breadcrumb — switch right from the topbar</h3>
 
-<p align="center"><a href="#install"><ins><code>dsh plugin --profile web add github:xinspark/dsh-better-session-title#v1.4.0</code></ins></a></p>
+<p align="center"><a href="#install"><ins><code>dsh plugin --profile web add github:xinspark/dsh-better-session-title#v1.5.0</code></ins></a></p>
 
 Better Session Topbar (package name `dsh-better-session-topbar`; the repository keeps its old name `dsh-better-session-title`) is a **session-topbar enhancement plugin** for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) — pure UI enhancement, no new capabilities, no system source changes. DSH's native topbar shows only the session title (an ancestry breadcrumb) in the center, while workspace/session switching lives in the left sidebar; when the sidebar is collapsed, every switch costs extra clicks. This plugin puts the switching entry right into the topbar:
 
-- **Workspace dropdown** — all workspaces with their session counts, one-click switch, plus "Add workspace" (the plugin's own dialog, matching the native metrics; its footer offers "Choose with the system picker") and delete.
+- **Workspace dropdown** — all workspaces with their session counts, one-click switch, plus "Add workspace" (handed straight to the host picker: on a native host that is the OS folder dialog, on a browse host the official in-app panel) and delete.
 - **Session dropdown** — all sessions of the current workspace with relative timestamps, one-click switch, plus "New session".
 - **The three native topbar chips are brought in line too** — 子智能体 / 智能体团队 / 后台任务 and the breadcrumb share one set of metrics (type size, padding, corners, hover fill, icon size) and give way in a fixed order: chips drop to their counters → the title steps aside for icons → the chips become icons.
 - **Two narrow-screen displays** — when the row truly runs out of room, pick **Breadcrumb** (folds to icons; every level stays clickable) or **Session title** (the row keeps only the title). Each option's trade-off is written next to it on the plugin page.
@@ -26,16 +26,16 @@ All inline row actions reuse native DSH capabilities: rename workspace/session, 
 
 Works on **Windows · macOS · Linux** (DSH Web GUI) — plain JavaScript, no native dependencies, no build step for distribution.
 
-> Verification baseline: **DeepSeek Harness 0.2.1-rc.2** (DSH NEXT Desktop and `dsh web`); 0.2.0-rc.2 stays compatible since 1.2.1. Other versions are untested.
+> Verification baseline: **DSH NEXT 2.0.20 (bundling DeepSeek Harness 0.2.1-rc.3)** and `dsh web`; 0.2.1-rc.2 and 0.2.0-rc.2 remain compatible. Other versions are untested.
 
 ## Install
 
 `dsh-better-session-topbar` is a **bundle** — a configuration patch layer distributed as a package (see the [official DSH plugin publishing docs](https://deepseek-harness.github.io/deepseek-harness/develop/basic/publish)). Install it into a profile with `dsh plugin`: it links the package and appends it to `dsh.profile.bundles`:
 
 ```sh
-# from GitHub (primary channel; v1.4.0 is the current release tag)
+# from GitHub (primary channel; v1.5.0 is the current release tag)
 # note: the repository is dsh-better-session-title, the package is dsh-better-session-topbar
-dsh plugin --profile web add github:xinspark/dsh-better-session-title#v1.4.0
+dsh plugin --profile web add github:xinspark/dsh-better-session-title#v1.5.0
 ```
 
 - **Consider locking a commit**: a GitHub install pulls the repository source, so later pushes don't silently change what you run. To pin the exact content, use `github:xinspark/dsh-better-session-title#<commit-sha>` (as recommended by the official docs).
@@ -43,7 +43,7 @@ dsh plugin --profile web add github:xinspark/dsh-better-session-title#v1.4.0
 
   ```sh
   dsh plugin --profile web add ./dsh-better-session-topbar
-  dsh plugin --profile web add ./dsh-better-session-topbar-1.4.0.tgz
+  dsh plugin --profile web add ./dsh-better-session-topbar-1.5.0.tgz
   ```
 
 Then start the Web UI: `dsh web` (or `dsh --profile web`). The first `add` auto-initializes the profile with `@deepseek-ai/dsh-base`.
@@ -61,7 +61,7 @@ The bundle patch (`cordis.patch.yml`) registers both the host and client halves 
 | Width ladder | When the row runs out of room the segments give way in one fixed order: the three native chips (子智能体 / 智能体团队 / 后台任务) go `full → count` (label replaced by the `(N)` badge) → **the whole breadcrumb collapses to icons** (the counters survive, a long title is the least valuable thing on the row) → the chips go `count → icon`. Every decision comes from the measured free width, never from a remembered header width, so a longer title or a vanished chip unfolds by itself. |
 | Narrow-screen display | Two options on the plugin page: **Breadcrumb** (the default — keeps the workspace / session levels, each still clickable for switching after folding to icons; the cost is that at the narrowest only icons remain, so the full title needs a hover or a click) or **Session title** (the row keeps only the current session title — the parent / current pair inside a subagent session — so long titles stay readable; the cost is that the workspace and switching move into the dropdown, and at the narrowest the parent becomes the up/down arrow glyph). Both take effect at the same fold point and preview live. |
 | Chip parity | The three native chips share one anatomy — icon · label · (N) · ring · chevron — with identical 12px/18 type, `3px 7px` padding, 5px gap, 28px height, 14px icon, 12px chevron, corners and hover fill. What the native ones lack is added (the team chip gets a member count and a running ring phase-pinned to the official spinner), and what one of them orders differently is normalised (the jobs chip's running dot moves after the counter). |
-| Workspace dropdown | Workspace list (session-count meta), Add workspace (plugin dialog; its footer can hand off to the system picker), row "more": rename / delete workspace. |
+| Workspace dropdown | Workspace list (session-count meta), Add workspace (handed to the host, same as the sidebar +), row "more": rename / delete workspace. |
 | Session dropdown | Session list of the current workspace (relative-time meta), New session, row "more": rename / fork / archive session. |
 | Native-consistent interactions | The dropdown is a self-drawn layer that reuses the native menu tokens (`--dsw-elevation-prominent`, `--dsw-radius-lg`, `--dsw-menu-surface-fill` + `--dsw-menu-backdrop-filter`, hover fill `--dsw-alias-interactive-bg-hover`); its row metrics are min-height 40 / padding 8·10 / 14px·22px (matching the native `AccountMenu` `[role=menuitem]`; the native `Menu.module.css` is more compact and this plugin does not follow it). The more menu and rename/delete dialogs use the native `Menu` / `Modal` / `Button` / `Input` (autoFocus, select-all, IME-safe Enter, duplicate workspace-name check, error rows). |
 | Shared lifecycle | The more menu closes with its owning dropdown (outside click / Escape / selection / switching) — no orphan menus. |
@@ -118,6 +118,8 @@ This project is built on the official [deepseek-ai/deepseek-harness](https://git
   4. `WorkspaceTitleBreadcrumb` — registered into `conversation.session.header.actions` (`order: -40`, leftmost in the topbar); per-level icon fallback (a level drops its text only once the topbar squeezes it below `ICONIC_TEXT_FLOOR` of visible label width) plus the decoration and width ladder for the three native chips (every decision comes from the measured free width, `avail()`; **no** header-width hysteresis — folds are usually caused by a rename or a newly appeared chip, and a fold keyed on header width never comes back); the more menu shares the dropdown lifecycle; rename/delete use native Modals.
   5. `apply(ctx)` — style injection + slot registrations (topbar breadcrumb and the plugin page); `inject: ['slots','workspaces','sessions','uiWorkspace','locale']` (declaring the service dependencies matters: if `apply` wins the race, `undefined` handles get captured permanently and every action dies silently while the UI still looks perfect). The settings service and the shortcut service are **optional** dependencies taken through `ctx.inject([...], …)` children: without them you lose the settings page or the key hints, not the breadcrumb.
 
+- **Minimum check after a change** — `npm test` (`test/render-smoke.cjs` runs the factory and the breadcrumb / settings render bodies against stub React and primitives; it catches dangling references after a deletion and says nothing about appearance). Still click through the DSH upgrade checklist before a release.
+
 Quick reference:
 
 - **Add a row action** — add an entry to the `actions` array of `wsListItems` / `ssListItems` (`{ id, label, icon?, danger?, action }`).
@@ -136,10 +138,8 @@ Quick reference:
 - **Change the icon-fallback threshold** — the threshold is `ICONIC_TEXT_FLOOR` (≈5 CJK characters wide): a level falls back to its icon only when its label is truncated *and* its visible width is below it, or when the whole row overflows. Two traps: (1) do not use "the title exceeds this level's `max-width`" as the predicate — that also matches in a wide window (a long title exceeds the cap by nature) and the UI would turn into icons everywhere; (2) do not assume the label always gets squeezed — topbar containers are not shrinkable by default, and the overflow shows up as clipping at the window edge instead (see the `has(.bst-crumbs)` rule that makes them shrinkable).
 - **Add another chain level** — change `bstSessionChain` (data) only; the render path is one shared block per level, with the icon picked by `node.subagent` (subagent = up/down chevrons, otherwise the session glyph), so no chain length can produce a level without an icon.
 - **The dropdown must be portaled into `document.body`** — rendered in place inside the topbar slot it sits in the header's stacking context, so page content (including a third-party plugin's injected `复制` button) paints over it, and the app shell's sidebar column can cover its first row. The native `Menu`'s `portal: true` exists for the same reason.
-- **Do not reuse the native wording for action rows** — "mobile pocket" plugins (measured: `dsh-pocket` 2.11.0 `hideWsEntries`) scan every `[role=menuitem]`/`[role=option]`/`li`/`button`/`a` and hide the ones whose text **exactly** matches `添加工作区` / `Add workspace`, with a `MutationObserver` that keeps newly inserted nodes hidden too. Reusing the native label made that row vanish from our dropdown; keeping our own wording (`新建工作区` / `New workspace`) avoids it.
-- **Probe the picker service before adding a workspace; never treat `invoke` as success** — the directory choice is a composed capability: `workspace.add` only opens the flow, and the real interaction is the occupant of the `sidebar.workspaces.directoryFlow` hole (the official browse panel on native desktop/web, the community build's own native driver on its desktop window). `shortcuts.invoke` returns silently when the command is blocked (empty hole / `directoryBusy`), so "no exception" does not mean "UI appeared". Worse, DSH Desktop Next replaces the official `directoryPickerController` entirely: its desktop window opens the OS chooser through the preload bridge `__DSH_DIRECTORY_PICKER__`, while its web build has neither service nor bridge — there `listDirectory` / `pickDirectory` both throw `gateway/service-unavailable`. Current order: probe with `listDirectory()` (no side effects) → service alive: borrow the host's interaction (native command → `pickDirectory` → our own panel) → service dead: only the preload bridge → no bridge: report it plainly. Do **not** degrade to a path-input fallback (the user rejected that). `[bst-picker]` in the probe log names the branch that ran.
-- **A self-drawn dialog must reuse the official metrics, not invent its own** — matching `dsh-client-ui-directory-picker-browse` means a `headless` Modal plus a self-drawn header/content/footer: dialog `680×500`, header `16/14/8/24` + `.5px` bottom border, content `16/16/16/24`, footer `16/24` + `.5px` top border, `footerAction` at least 72px wide, and "show hidden files" as a borderless text toggle. One wrong number and it reads as a different dialog next to the native one.
-- **The system-picker button renders only when a preload bridge exists** — `__DSH_DESKTOP_PICK_DIRECTORY__` (official desktop) or `__DSH_DIRECTORY_PICKER__` (community/official preload). Do not fall back to `uiWorkspace.pickDirectory`: this panel only opens on the browse backend, where `pick` always throws "needs the native capability", so the button would be a guaranteed error. One label for all three platforms (用系统选择器选择 / Choose with the system picker) — what the system dialog looks like is decided by the host and the preload bridge on Windows / macOS / Linux, so the plugin does not branch by platform.
+- **Do not reuse the native wording for action rows (when a "mobile pocket" plugin is installed)** — measured: `dsh-pocket` 2.11.0 `hideWsEntries` scans every `[role=menuitem]`/`[role=option]`/`li`/`button`/`a` and hides the ones whose text **exactly** matches `添加工作区` / `Add workspace`, with a `MutationObserver` that keeps newly inserted nodes hidden too; keeping our own wording (`新建工作区` / `New workspace`) avoids it. That plugin is not in this profile, so the row deliberately uses the native wording again (the owner asked for it); switch the action row to our own wording if it is ever installed.
+- **"Add workspace" is handed to the host; the plugin draws no panel** — the sidebar `WorkspacePickFlow` is `addOnly: true`, so `open` rises straight into `sidebar.workspaces.directoryFlow` and the host occupant decides: a native backend (win32/darwin local) is the official renderless `NativeDirectoryFlow` and opens the OS folder dialog; a browse backend is the official in-app panel. The plugin only calls `workspace.add`. When the hole is empty (rare) it falls back to the preload bridge `__DSH_DIRECTORY_PICKER__` → `uiWorkspace.pickDirectory()` → a plain error; it never draws its own panel and never degrades to path input. 1.5.0 removed the old self-drawn panel and the `priority:-1` takeover. `[bst-picker]` in the probe log tells the host flow and the fallback apart.
 
 ## DSH upgrade checklist
 
@@ -148,12 +148,11 @@ This plugin sits on DSH's internal contracts (there is no stable third-party API
 | Check | Where | How to verify after an upgrade |
 | --- | --- | --- |
 | Package name in three places | `package.json` name / `cordis.patch.yml` row id / `__ModuleLoader__.load({id})` | The plugin loads; no "import failed" |
-| Slot names | `conversation.session.header.actions`, `sidebar.workspaces.directoryFlow`, `conversation.hero.workspace.directoryFlow`, `plugins.row.config` | `cordis_inspect_query` shows the names and props |
+| Slot names | `conversation.session.header.actions`, `sidebar.workspaces.directoryFlow`, `conversation.hero.workspace.directoryFlow`, `plugins.row.config` | `cordis_inspect_query` shows the names and props; sibling order changes between versions (rc.3: team -20, preset -10, cost-meter 1, subagent-catalog 10, job-list 20) and the plugin only relies on its own -40 |
 | Services | required `slots` / `workspaces` / `sessions` / `uiWorkspace` / `locale`; optional `shortcuts` / `configForms` | Dropdown actions work, the settings page exists |
-| Directory interaction | browse panel / native system dialog; bridges `__DSH_DESKTOP_PICK_DIRECTORY__`, `__DSH_DIRECTORY_PICKER__`; community `priority:-1` occupant | Click once in each of desktop window / web / community desktop / community web |
-| Dialog metrics | official `DirectoryBrowser.module.css`: 680×500, header 16/14/8/24, footer 16/24, `footerAction` 72 | Compare side by side with the native dialog |
+| Directory interaction | the plugin **takes nothing over and draws no panel**: `workspace.add` → the host occupant (native = official renderless → OS chooser; browse = official in-app panel); only an empty hole falls back to the preload bridge `__DSH_DIRECTORY_PICKER__` / `pickDirectory()` | Click "Add workspace" once in each of desktop window / web / community desktop / community web: a native host must show the OS dialog, a browse host the official in-app panel |
 | Topbar DOM anchors | `header[data-window-drag]` + `nav:has(~ div .bst-crumbs)` (0.2.0's `data-conversation-*` are gone) | Native title hidden, narrow-screen switch works |
-| primitives | `Modal({headless})` / `Button` / `Input` / `Menu` / `*Regular` icons | Open both dialogs and the plugin settings page |
+| primitives | `Modal` / `Button` / `Input` / `Menu` / `Switch` / `*Regular` icons | Open the rename/delete dialogs and the plugin settings page |
 | Copy keys | Aligned with the native menu (add workspace / new session / fork session) | Check zh and en |
 
 ## Acknowledgments
