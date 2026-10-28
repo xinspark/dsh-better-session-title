@@ -5,6 +5,21 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.3] - 2026-10-29
+
+**修复子智能体会话（三级面包屑）在窄顶栏下的显示**：文字会撑出自己那一级、两级分隔符被挤没、末级的箭头被裁掉。三处都是 CSS 约束问题，**层级、图标、下拉与点击行为一律未变**。
+
+### Fixed
+
+- **文字不再画到层级外面。** `.bst-crumb-text` 补 `min-width:0` —— flex 子项默认 `min-width:auto`，不会小于内容宽度，于是 `text-overflow:ellipsis` 一直没生效；父会话标题（如「智能权限模式插件调试与优化」）会以 196px 画进 95px 的格子里，盖住后面的分隔符与下一级图标。实测证据：容器 269px 时三格 `69+5+95+5+72`（含间隙正好塞满），说明不是空间不够，而是文字溢出。
+- **分隔符不再被压成 0 宽。** `.bst-sep` 补 `flex:none`；此前容器变窄时两个 `/` 会被挤没。
+- **末级箭头不再被裁。** `.bst-crumb` 改为 flex 容器、按钮 `flex:1 1 auto`，按钮永远不会长于所属层级；此前末级格 165px 放不下「图标+文字+箭头」，多出的部分被外层 `overflow:hidden` 切平（表现为半个字 + 箭头消失）。
+
+### Notes
+
+- 窄屏降级阶梯（chip 交数字 → 标题让位 → chip 收图标）与 1.5.2 完全一致；本次只收紧盒内约束，不改任何阈值。
+- 诊断开关（`localStorage.setItem('dsh-better-session-title:debug','1')`）在排查时提供了 `[bst-dom]` 逐节点宽度，是定位本问题的关键证据。
+
 ## [1.5.2] - 2026-10-29
 
 **只改文档**：把 npm / GitHub 双渠道的安装说明写进随包发布的 README，并补齐 1.5.1 的「上架 npm」记录。**代码零改动**，行为与 1.5.1 完全相同。

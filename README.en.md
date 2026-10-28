@@ -37,7 +37,7 @@ Works on **Windows · macOS · Linux** (DSH Web GUI) — plain JavaScript, no na
 dsh plugin --profile web add dsh-better-session-topbar
 
 # from GitHub (equivalent; pins a tag or commit)
-dsh plugin --profile web add github:xinspark/dsh-better-session-topbar#v1.5.2
+dsh plugin --profile web add github:xinspark/dsh-better-session-topbar#v1.5.3
 ```
 
 - **Consider locking a commit**: a GitHub install pulls the repository source, so later pushes don't silently change what you run. To pin the exact content, use `github:xinspark/dsh-better-session-topbar#<commit-sha>` (as recommended by the official docs).
@@ -45,7 +45,7 @@ dsh plugin --profile web add github:xinspark/dsh-better-session-topbar#v1.5.2
 
   ```sh
   dsh plugin --profile web add ./dsh-better-session-topbar
-  dsh plugin --profile web add ./dsh-better-session-topbar-1.5.2.tgz
+  dsh plugin --profile web add ./dsh-better-session-topbar-1.5.3.tgz
   ```
 
 Then start the Web UI: `dsh web` (or `dsh --profile web`). The first `add` auto-initializes the profile with `@deepseek-ai/dsh-base`.
