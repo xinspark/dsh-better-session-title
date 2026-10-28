@@ -33,7 +33,10 @@ Works on **Windows · macOS · Linux** (DSH Web GUI) — plain JavaScript, no na
 `dsh-better-session-topbar` is a **bundle** — a configuration patch layer distributed as a package (see the [official DSH plugin publishing docs](https://deepseek-harness.github.io/deepseek-harness/develop/basic/publish)). Install it into a profile with `dsh plugin`: it links the package and appends it to `dsh.profile.bundles`:
 
 ```sh
-# from GitHub (primary channel; v1.5.1 is the current release tag)
+# from npm (recommended, shortest; published to registry.npmjs.org)
+dsh plugin --profile web add dsh-better-session-topbar
+
+# from GitHub (equivalent; pins a tag or commit)
 dsh plugin --profile web add github:xinspark/dsh-better-session-topbar#v1.5.1
 ```
 

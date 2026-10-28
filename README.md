@@ -33,7 +33,10 @@
 `dsh-better-session-topbar` 是一个**组合包（bundle）**——以包形式分发的配置补丁层（见 [DSH 官方插件发布文档](https://deepseek-harness.github.io/deepseek-harness/develop/basic/publish)）。用 `dsh plugin` 命令安装进 profile：它会自动链接包并追加到 `dsh.profile.bundles`：
 
 ```sh
-# 从 GitHub 安装（主分发渠道，v1.5.1 为当前发布 tag）
+# 从 npm 安装（推荐，最短；已发布到 registry.npmjs.org）
+dsh plugin --profile web add dsh-better-session-topbar
+
+# 从 GitHub 安装（等价；可锁 tag 或 commit）
 dsh plugin --profile web add github:xinspark/dsh-better-session-topbar#v1.5.1
 ```
 

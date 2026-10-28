@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **仓库名与包名统一为 `dsh-better-session-topbar`。** 1.3.6 只改了包名，仓库一直沿用旧名，README 里得挂一句「注意：仓库名仍是老的」。现在标准安装串是 `github:xinspark/dsh-better-session-topbar#v1.5.1`。
+- **上架 npm**：`dsh-better-session-topbar@1.5.1` 已发布到 `registry.npmjs.org`，于是 `dsh plugin add dsh-better-session-topbar` 不必再带 `github:` 前缀；npm 与 GitHub tag 两个渠道内容一致（tarball shasum `6f0073dd…`）。发布时 npm 额外生成了一个 `0.0.0-stage` 占位版本（staged publishing 的产物，不可安装、不影响 `latest`），因当前令牌的 2FA 绕过限制而无法删除。
 - **旧地址继续可用。** GitHub 对改名的仓库保留重定向，`github:xinspark/dsh-better-session-title#v1.5.0` 仍能解析并拉到同一个 tag；已安装的 profile 不用动（profile 依赖键是包名，本来就已是新名），`bst-release-check` 里钉着的旧串也能装。
 - **随仓库名更新的引用**：`package.json` 的 `repository` / `homepage` / `bugs`、README 中英的 release 徽章与安装命令（含 tarball 名）、MAINTAINING 的仓库路径、插件市场条目（文件改名为 `xinspark__dsh-better-session-topbar.yml` 并更新 `url` / `name`）。
 
