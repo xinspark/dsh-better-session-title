@@ -1,16 +1,16 @@
 {
   "name": "dsh-better-session-topbar",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "更好的会话顶栏：工作区/会话面包屑、子智能体层级、窄屏面包屑/标题二选一 · Better Session Topbar",
   "icon": "./icon.svg",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/xinspark/dsh-better-session-title.git"
+    "url": "https://github.com/xinspark/dsh-better-session-topbar.git"
   },
-  "homepage": "https://github.com/xinspark/dsh-better-session-title",
+  "homepage": "https://github.com/xinspark/dsh-better-session-topbar",
   "bugs": {
-    "url": "https://github.com/xinspark/dsh-better-session-title/issues"
+    "url": "https://github.com/xinspark/dsh-better-session-topbar/issues"
   },
   "keywords": [
     "dsh",

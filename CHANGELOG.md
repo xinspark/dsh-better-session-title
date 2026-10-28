@@ -5,6 +5,21 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.1] - 2026-10-28
+
+**分发渠道改名完成**：GitHub 仓库从 `dsh-better-session-title` 改为 `dsh-better-session-topbar`，与包名一致。**代码零改动**，顶栏行为与 1.5.0 完全相同。
+
+### Changed
+
+- **仓库名与包名统一为 `dsh-better-session-topbar`。** 1.3.6 只改了包名，仓库一直沿用旧名，README 里得挂一句「注意：仓库名仍是老的」。现在标准安装串是 `github:xinspark/dsh-better-session-topbar#v1.5.1`。
+- **旧地址继续可用。** GitHub 对改名的仓库保留重定向，`github:xinspark/dsh-better-session-title#v1.5.0` 仍能解析并拉到同一个 tag；已安装的 profile 不用动（profile 依赖键是包名，本来就已是新名），`bst-release-check` 里钉着的旧串也能装。
+- **随仓库名更新的引用**：`package.json` 的 `repository` / `homepage` / `bugs`、README 中英的 release 徽章与安装命令（含 tarball 名）、MAINTAINING 的仓库路径、插件市场条目（文件改名为 `xinspark__dsh-better-session-topbar.yml` 并更新 `url` / `name`）。
+
+### Docs
+
+- MAINTAINING §2 补记：改仓库名属对外动作，本次由所有者于 2026-10-28 明确指示后执行。
+- `docs/RELEASE.md` 顶部说明补上「仓库名已于 1.5.1 统一」。
+
 ## [1.5.0] - 2026-10-28
 
 「添加工作区」改为**完全交给宿主**：删除插件自绘的目录面板与 `priority:-1` 的目录流接管，行为与原生 DSH 一致 —— native 宿主直接弹系统「选择文件夹」，browse 宿主用官方应用内面板。

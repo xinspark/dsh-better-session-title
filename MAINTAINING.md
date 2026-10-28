@@ -4,9 +4,9 @@
 
 ## 1. 角色与范围
 
-维护者负责 **更好的会话顶栏 / Better Session Topbar**（包名 `dsh-better-session-topbar`，仓库沿用 `dsh-better-session-title`）的三件事：
+维护者负责 **更好的会话顶栏 / Better Session Topbar**（包名与仓库名同为 `dsh-better-session-topbar`）的三件事：
 
-1. **GitHub 运维**：`xinspark/dsh-better-session-title` 的 Issues 与 PR——分诊、复现、给结论、写回复草稿、按批准执行回复/关闭/合并。
+1. **GitHub 运维**：`xinspark/dsh-better-session-topbar` 的 Issues 与 PR——分诊、复现、给结论、写回复草稿、按批准执行回复/关闭/合并。
 2. **跟随 DSH 版本**：本地 DSH 实例（DSH NEXT / DSH 原生桌面 / `dsh` CLI）升级后，判断插件是否需要适配或升版本，按 `lib/client.js` 顶部的「DSH 升级维护清单」逐类核对。
 3. **插件市场提交**：插件发版后同步市场条目。
 
@@ -19,13 +19,14 @@
   - 向插件市场（`awesome-dsh-plugin/awesome-dsh-plugin`）提 PR 或改条目；
   - 任何第三方仓库上的写操作。
 - **不需要批准的本地动作**：读代码与远端资料、跑校验、改代码、本地 commit、本地 tag、写草稿/报告。
+- **已记录的授权**：2026-10-28 所有者明确指示「完全改名」，据此执行了 `gh repo rename`（`dsh-better-session-title` → `dsh-better-session-topbar`）及随之的推送与 Release；其余对外动作仍逐项批准。
 
 ## 3. 每日 21:00 检查清单
 
 1. **GitHub**：列出 open Issues / PRs，每条给：现象、是否可复现、建议处置（修复 / 需要信息 / 关闭）、回复草稿。
 2. **DSH 版本**：记录当前实例版本（DSH NEXT 版本、runtime `@deepseek-ai/dsh` 版本、客户端包版本）；与插件上次适配的版本比对；按「DSH 升级维护清单」10 类耦合点给出「本次升级是否影响」的结论。
 3. **待发布**：本地未推送提交、未发布 tag、版本号与 CHANGELOG 是否一致。
-4. **市场**：`awesome-dsh-plugin/awesome-dsh-plugin` 的 `data/plugins/xinspark__dsh-better-session-title.yml` 与 README 列表条目，是否与最新版本/功能一致；只输出 diff 草稿。
+4. **市场**：`awesome-dsh-plugin/awesome-dsh-plugin` 的 `data/plugins/xinspark__dsh-better-session-topbar.yml` 与 README 列表条目，是否与最新版本/功能一致；只输出 diff 草稿。
 5. **汇总**：把「今晚可执行的外部动作」逐项列出，等批准。
 
 ## 4. 发版流程
@@ -39,14 +40,15 @@
 
 - `dsh-market/dsh-market` 是**市场应用本体（TypeScript）**，不是插件目录；它的 README 明确写着「要收录插件请去 awesome-dsh-plugin 提 PR」。
 - 真正的目录是 **`awesome-dsh-plugin/awesome-dsh-plugin`**：
-  - 单条数据：`data/plugins/xinspark__dsh-better-session-title.yml`（`url` / `name` / `category` / `description.en|zh`）；
+  - 单条数据：`data/plugins/xinspark__dsh-better-session-topbar.yml`（`url` / `name` / `category` / `description.en|zh`）；
   - 列表条目：`README.md` 与 `README.zh.md` 的 UI 分类下一条链接。
 - 只在**功能描述或仓库地址变化**时改它；纯版本号升级（目录里不含 version 字段）不需要动。
 
 ## 6. 当前待办（2026-10-28）
 
 - [x] **v1.4.0 发布**（2026-10-27）：tag `v1.4.0` → `a9ab1fe`，GitHub Release 已建，远端 `main` = `1738c3d`（含 MAINTAINING 本文）。
-- [x] **v1.5.0 发布**（2026-10-28）：tag `v1.5.0` → `e3ba1d9`（快进自 `1738c3d`，无需 force），远端 `main` = `e3ba1d9`；Release <https://github.com/xinspark/dsh-better-session-title/releases/tag/v1.5.0>（非 draft / 非 prerelease，正文取 CHANGELOG 1.5.0 节）。内容：跟随 DSH NEXT 2.0.20 / Harness 0.2.1-rc.3，「添加工作区」完全交给宿主，删除自绘面板与目录流接管；新增 `npm test` 渲染冒烟。
-- [x] **市场条目**：`_awesome/data/plugins/xinspark__dsh-better-session-title.yml` 只描述面包屑与下拉切换（未提对话框/选择器），1.5.0 的改动不影响其文案；`maintainer_market_validate` 报 0 error / 0 warning。**不需要改条目**。
-- [ ] **干净 profile 验收**：`bst-release-check` 仍钉在 `github:...#v1.2.0`。按 §2 维护者不改 profile 的插件集合，需要所有者执行一次 `dsh plugin --profile bst-release-check add github:xinspark/dsh-better-session-title#v1.5.0` 再点一遍 —— desktop / work-exp 都是 `link:`，永远跑工作树，不能当 tag 内容的证据。
+- [x] **v1.5.0 发布**（2026-10-28）：tag `v1.5.0` → `e3ba1d9`（快进自 `1738c3d`，无需 force），远端 `main` = `e3ba1d9`；Release <https://github.com/xinspark/dsh-better-session-topbar/releases/tag/v1.5.0>（非 draft / 非 prerelease，正文取 CHANGELOG 1.5.0 节）。内容：跟随 DSH NEXT 2.0.20 / Harness 0.2.1-rc.3，「添加工作区」完全交给宿主，删除自绘面板与目录流接管；新增 `npm test` 渲染冒烟。
+- [x] **v1.5.1 发布**（2026-10-28）：**仓库改名完成** —— `dsh-better-session-title` → `dsh-better-session-topbar`，包名与仓库名终于一致；代码零改动。tag `v1.5.1` + Release，旧仓库地址由 GitHub 重定向保持可用（`github:xinspark/dsh-better-session-title#v1.5.0` 仍能装）。
+- [ ] **市场条目改名（1.5.1）**：`_awesome/data/plugins/xinspark__dsh-better-session-topbar.yml` 已按新仓库名改名并更新 `url` / `name`，`README.md` / `README.zh.md` 的列表条目同步；`maintainer_market_validate` 通过。**待向上游 `awesome-dsh-plugin/awesome-dsh-plugin` 提 PR**。
+- [ ] **干净 profile 验收**：`bst-release-check` 仍钉在 `github:...#v1.2.0`。按 §2 维护者不改 profile 的插件集合，需要所有者执行一次 `dsh plugin --profile bst-release-check add github:xinspark/dsh-better-session-topbar#v1.5.1` 再点一遍 —— desktop / work-exp 都是 `link:`，永远跑工作树，不能当 tag 内容的证据。
 - [ ] **rc.3 实机回归**：顶栏 / 两个下拉 / 添加工作区（应直接弹系统「选择文件夹」，且不再出现插件自绘的 680×500 面板）/ 插件详情页各点一次。

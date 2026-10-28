@@ -8,6 +8,8 @@
 > 验证基线：DSH **0.2.0-rc.2**（`@deepseek-ai/dsh-client-ui-primitives` 与 app 依赖一致）。
 >
 > **包名已变更（1.3.6）**：包名从 `dsh-better-session-title` 改为 **`dsh-better-session-topbar`**，仓库名不变（GitHub 地址、安装命令里的仓库路径照旧）。本文line 36 / 44 的 npm 发布与卸载命令按新包名理解；旧名在 npmjs 上仍为 404，但它已不是本包的包名。另注意：**改包名后运行中的宿主必须重启一次**才收敛（旧行留在内存组合里会报导入失败），详见 CHANGELOG 1.3.6。
+>
+> **仓库名已统一（1.5.1）**：GitHub 仓库也已改名为 `dsh-better-session-topbar`，本文里的旧仓库路径靠 GitHub 重定向仍可解析，但新命令请用 `github:xinspark/dsh-better-session-topbar#<tag>`。
 
 ## 0. 发布门前置：两件事 + 两个红灯
 

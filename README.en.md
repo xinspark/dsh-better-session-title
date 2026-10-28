@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/github/v/release/xinspark/dsh-better-session-title?style=flat&amp;label=release&amp;color=08C" alt="GitHub release">
+  <img src="https://img.shields.io/github/v/release/xinspark/dsh-better-session-topbar?style=flat&amp;label=release&amp;color=08C" alt="GitHub release">
   <img src="https://img.shields.io/badge/plugin-UI%20enhancement-47848F?style=flat" alt="UI enhancement plugin">
   <img src="https://img.shields.io/badge/DSH%20Web%20GUI-Windows%20%7C%20macOS%20%7C%20Linux-4493F8?style=flat" alt="Windows | macOS | Linux">
   <img src="https://img.shields.io/badge/license-MIT-2EA44F?style=flat" alt="MIT License">
@@ -13,9 +13,9 @@
 
 <h3 align="center">Replace the DSH topbar session title with a two-level "Workspace / Session" breadcrumb — switch right from the topbar</h3>
 
-<p align="center"><a href="#install"><ins><code>dsh plugin --profile web add github:xinspark/dsh-better-session-title#v1.5.0</code></ins></a></p>
+<p align="center"><a href="#install"><ins><code>dsh plugin --profile web add github:xinspark/dsh-better-session-topbar#v1.5.1</code></ins></a></p>
 
-Better Session Topbar (package name `dsh-better-session-topbar`; the repository keeps its old name `dsh-better-session-title`) is a **session-topbar enhancement plugin** for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) — pure UI enhancement, no new capabilities, no system source changes. DSH's native topbar shows only the session title (an ancestry breadcrumb) in the center, while workspace/session switching lives in the left sidebar; when the sidebar is collapsed, every switch costs extra clicks. This plugin puts the switching entry right into the topbar:
+Better Session Topbar (the package and the repository are both `dsh-better-session-topbar`) is a **session-topbar enhancement plugin** for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) — pure UI enhancement, no new capabilities, no system source changes. DSH's native topbar shows only the session title (an ancestry breadcrumb) in the center, while workspace/session switching lives in the left sidebar; when the sidebar is collapsed, every switch costs extra clicks. This plugin puts the switching entry right into the topbar:
 
 - **Workspace dropdown** — all workspaces with their session counts, one-click switch, plus "Add workspace" (handed straight to the host picker: on a native host that is the OS folder dialog, on a browse host the official in-app panel) and delete.
 - **Session dropdown** — all sessions of the current workspace with relative timestamps, one-click switch, plus "New session".
@@ -33,17 +33,16 @@ Works on **Windows · macOS · Linux** (DSH Web GUI) — plain JavaScript, no na
 `dsh-better-session-topbar` is a **bundle** — a configuration patch layer distributed as a package (see the [official DSH plugin publishing docs](https://deepseek-harness.github.io/deepseek-harness/develop/basic/publish)). Install it into a profile with `dsh plugin`: it links the package and appends it to `dsh.profile.bundles`:
 
 ```sh
-# from GitHub (primary channel; v1.5.0 is the current release tag)
-# note: the repository is dsh-better-session-title, the package is dsh-better-session-topbar
-dsh plugin --profile web add github:xinspark/dsh-better-session-title#v1.5.0
+# from GitHub (primary channel; v1.5.1 is the current release tag)
+dsh plugin --profile web add github:xinspark/dsh-better-session-topbar#v1.5.1
 ```
 
-- **Consider locking a commit**: a GitHub install pulls the repository source, so later pushes don't silently change what you run. To pin the exact content, use `github:xinspark/dsh-better-session-title#<commit-sha>` (as recommended by the official docs).
+- **Consider locking a commit**: a GitHub install pulls the repository source, so later pushes don't silently change what you run. To pin the exact content, use `github:xinspark/dsh-better-session-topbar#<commit-sha>` (as recommended by the official docs).
 - **Local directory / tarball** (development or offline; the local folder and the package now share the name `dsh-better-session-topbar`):
 
   ```sh
   dsh plugin --profile web add ./dsh-better-session-topbar
-  dsh plugin --profile web add ./dsh-better-session-topbar-1.5.0.tgz
+  dsh plugin --profile web add ./dsh-better-session-topbar-1.5.1.tgz
   ```
 
 Then start the Web UI: `dsh web` (or `dsh --profile web`). The first `add` auto-initializes the profile with `@deepseek-ai/dsh-base`.
