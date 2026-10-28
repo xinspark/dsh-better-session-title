@@ -5,6 +5,16 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.2] - 2026-10-29
+
+**只改文档**：把 npm / GitHub 双渠道的安装说明写进随包发布的 README，并补齐 1.5.1 的「上架 npm」记录。**代码零改动**，行为与 1.5.1 完全相同。
+
+### Docs
+
+- README 中文与英文的安装段改为「npm 优先、GitHub 等价」，示例里的 tag 与 tarball 名跟到 1.5.2。
+- CHANGELOG 补记 1.5.1 的 npm 上架（1.5.1 包内的 CHANGELOG 早于这一条）。
+- 这一版的唯一目的，是让 **npm 包页面上的 README** 与实际渠道一致：1.5.1 发布时仓库文档还没补上 npm 安装段，npm 页面因此停留在「只写 GitHub 安装」的旧快照。
+
 ## [1.5.1] - 2026-10-28
 
 **分发渠道改名完成**：GitHub 仓库从 `dsh-better-session-title` 改为 `dsh-better-session-topbar`，与包名一致。**代码零改动**，顶栏行为与 1.5.0 完全相同。

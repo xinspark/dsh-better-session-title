@@ -13,7 +13,7 @@
 
 <h3 align="center">把 DSH 顶栏的会话标题换成「工作区 / 会话」两级面包屑，切换入口直接放在顶栏</h3>
 
-<p align="center"><a href="#安装"><ins><code>dsh plugin --profile web add github:xinspark/dsh-better-session-topbar#v1.5.1</code></ins></a></p>
+<p align="center"><a href="#安装"><ins><code>dsh plugin --profile web add dsh-better-session-topbar</code></ins></a></p>
 
 更好的会话顶栏（包名与仓库名同为 `dsh-better-session-topbar`）是面向 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 的**会话顶栏增强插件**——纯 UI 增强，不引入新能力，不改任何系统源码。DSH 原生顶栏中央只显示会话标题（层级面包屑），工作区/会话的切换入口在左侧边栏；侧边栏收起时，每次切换都要额外点击。本插件把切换入口直接放进顶栏：
 
@@ -37,7 +37,7 @@
 dsh plugin --profile web add dsh-better-session-topbar
 
 # 从 GitHub 安装（等价；可锁 tag 或 commit）
-dsh plugin --profile web add github:xinspark/dsh-better-session-topbar#v1.5.1
+dsh plugin --profile web add github:xinspark/dsh-better-session-topbar#v1.5.2
 ```
 
 - **建议锁定 commit**：GitHub 安装拉取的是仓库源码，tag 之后的新推送不会自动影响已安装版本；如需把运行内容严格固定到某个提交，用 `github:xinspark/dsh-better-session-topbar#<commit-sha>`（官方文档推荐做法）。
@@ -45,7 +45,7 @@ dsh plugin --profile web add github:xinspark/dsh-better-session-topbar#v1.5.1
 
   ```sh
   dsh plugin --profile web add ./dsh-better-session-topbar
-  dsh plugin --profile web add ./dsh-better-session-topbar-1.5.1.tgz
+  dsh plugin --profile web add ./dsh-better-session-topbar-1.5.2.tgz
   ```
 
 然后启动 Web UI：`dsh web`（或 `dsh --profile web`）。首次 `add` 会自动用 `@deepseek-ai/dsh-base` 初始化 profile。

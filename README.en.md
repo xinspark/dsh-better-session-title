@@ -13,7 +13,7 @@
 
 <h3 align="center">Replace the DSH topbar session title with a two-level "Workspace / Session" breadcrumb — switch right from the topbar</h3>
 
-<p align="center"><a href="#install"><ins><code>dsh plugin --profile web add github:xinspark/dsh-better-session-topbar#v1.5.1</code></ins></a></p>
+<p align="center"><a href="#install"><ins><code>dsh plugin --profile web add dsh-better-session-topbar</code></ins></a></p>
 
 Better Session Topbar (the package and the repository are both `dsh-better-session-topbar`) is a **session-topbar enhancement plugin** for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) — pure UI enhancement, no new capabilities, no system source changes. DSH's native topbar shows only the session title (an ancestry breadcrumb) in the center, while workspace/session switching lives in the left sidebar; when the sidebar is collapsed, every switch costs extra clicks. This plugin puts the switching entry right into the topbar:
 
@@ -37,7 +37,7 @@ Works on **Windows · macOS · Linux** (DSH Web GUI) — plain JavaScript, no na
 dsh plugin --profile web add dsh-better-session-topbar
 
 # from GitHub (equivalent; pins a tag or commit)
-dsh plugin --profile web add github:xinspark/dsh-better-session-topbar#v1.5.1
+dsh plugin --profile web add github:xinspark/dsh-better-session-topbar#v1.5.2
 ```
 
 - **Consider locking a commit**: a GitHub install pulls the repository source, so later pushes don't silently change what you run. To pin the exact content, use `github:xinspark/dsh-better-session-topbar#<commit-sha>` (as recommended by the official docs).
@@ -45,7 +45,7 @@ dsh plugin --profile web add github:xinspark/dsh-better-session-topbar#v1.5.1
 
   ```sh
   dsh plugin --profile web add ./dsh-better-session-topbar
-  dsh plugin --profile web add ./dsh-better-session-topbar-1.5.1.tgz
+  dsh plugin --profile web add ./dsh-better-session-topbar-1.5.2.tgz
   ```
 
 Then start the Web UI: `dsh web` (or `dsh --profile web`). The first `add` auto-initializes the profile with `@deepseek-ai/dsh-base`.
