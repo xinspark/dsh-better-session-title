@@ -45,7 +45,7 @@
   - 列表条目：`README.md` 与 `README.zh.md` 的 UI 分类下一条链接。
 - 只在**功能描述或仓库地址变化**时改它；纯版本号升级（目录里不含 version 字段）不需要动。
 
-## 6. 当前待办（2026-10-28）
+## 6. 当前待办（2026-10-29）
 
 - [x] **v1.4.0 发布**（2026-10-27）：tag `v1.4.0` → `a9ab1fe`，GitHub Release 已建，远端 `main` = `1738c3d`（含 MAINTAINING 本文）。
 - [x] **v1.5.0 发布**（2026-10-28）：tag `v1.5.0` → `e3ba1d9`（快进自 `1738c3d`，无需 force），远端 `main` = `e3ba1d9`；Release <https://github.com/xinspark/dsh-better-session-topbar/releases/tag/v1.5.0>（非 draft / 非 prerelease，正文取 CHANGELOG 1.5.0 节）。内容：跟随 DSH NEXT 2.0.20 / Harness 0.2.1-rc.3，「添加工作区」完全交给宿主，删除自绘面板与目录流接管；新增 `npm test` 渲染冒烟。
@@ -54,5 +54,4 @@
 - [x] **市场条目改名的 PR**：`_market/awesome-dsh-plugin` 分支 `update/dsh-better-session-topbar`（提交 `671daae`）——条目文件改名为 `xinspark__dsh-better-session-topbar.yml` 并更新 `url` / `name` / 描述（去掉 1.5.0 已删除的「同度量对话框」措辞），两个 README 用 `generate-readme.mjs` 重新生成，只动本条目。**已合并：[#10090](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/pull/10090)**（`fkysly` 于 2026-10-28T17:09:54Z 合并，merge commit `2d548a9`；两个 check 全绿）。上游 `main` 已是新条目、旧文件已删、README 第 1436 行同步；本地 `_market` 克隆已 reset 到 `origin/main`、合并分支已删。
 - [ ] **npm 页面上的 README 是旧快照**：tarball 里的 README 停在「只写 GitHub 安装」的版本（发布发生在文档补上 npm 段之前），包内 CHANGELOG 也没有「上架 npm」这一条。不影响安装与运行，下次发版会自动带上；想立刻消除差异就发一个只改文档的 patch 版（1.5.2）。
 - [ ] **npm 令牌收尾**：维护台里的 `NPM_TOKEN` 现在是本次新建的 `publish-topbar-1.5.1`（Bypass 2FA，**2026-11-05 过期**），旧的 `Agent` token 已删除。建议下一个版本前改成 Trusted Publishing，并删掉这个 token。另外账号级「Require two-factor authentication for write actions」当时为放行发布被关掉，需要时可勾回去（勾回后命令行发布又会索要 6 位码）。
-- [ ] **干净 profile 验收**：`bst-release-check` 仍钉在 `github:...#v1.2.0`。按 §2 维护者不改 profile 的插件集合，需要所有者执行一次 `dsh plugin --profile bst-release-check add github:xinspark/dsh-better-session-topbar#v1.5.1` 再点一遍 —— desktop / work-exp 都是 `link:`，永远跑工作树，不能当 tag 内容的证据。
-- [ ] **rc.3 实机回归**：顶栏 / 两个下拉 / 添加工作区（应直接弹系统「选择文件夹」，且不再出现插件自绘的 680×500 面板）/ 插件详情页各点一次。
+- [x] **实机验收**（2026-10-29，所有者本人执行）：干净 profile 实装 tag 版 + rc.3 界面点检（顶栏 / 两个下拉 / 添加工作区 / 插件详情页）已跑完，**无问题**。维护者未逐项复核，本条以所有者确认为准。
