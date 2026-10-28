@@ -35,7 +35,12 @@
 2. `package.json` 版本号 + 本地 commit + 本地 annotated tag。
 3. **请求批准**后：`git push`（远端分叉时用 `--force-with-lease`，并说明被替换的历史）+ 推 tag。
 4. 建 GitHub Release（附 CHANGELOG 摘要），再按需更新市场条目。
-5. **发到 npm**：`npm publish --registry https://registry.npmjs.org`（默认 registry 是 npmmirror 镜像，只读不收发布）。账号 2FA 只有安全密钥、没有 6 位码，所以发布必须用「Bypass 2FA + Read and write」的 granular token；这类 token **从 2027 年 1 月起不能再直接发布**，长期应迁到 Trusted Publishing（GitHub Actions + OIDC）。另：staged publishing 会在首次发布时留下 `0.0.0-stage` 占位版本，bypass token 无权删除（API 403），不影响 `latest`。
+5. **发到 npm**：走 **Trusted Publishing（GitHub Actions + OIDC）**，**不需要任何 npm token**。
+   - 触发：发布 Release（`published`）或 Actions → `publish` → Run workflow；CI 先跑 `npm test`，再 `npm publish --provenance`。
+   - 一次性配置（已完成，2026-10-29）：npm 包页面 → Settings → Trusted Publisher → GitHub Actions，`xinspark` / `dsh-better-session-topbar` / `publish.yml`，并勾选「Allow npm publish」。
+   - **发完要复核** `dist-tags.latest`：registry 有约 1–2 分钟处理延迟，CI 打出 `+ pkg@version` 不等于立刻可查。
+   - 历史遗留：`0.0.0-stage` 占位版本（staged publishing 产物），不影响 `latest`。
+   - 旧的 token 方式已不再使用：账号 2FA 只有安全密钥、无法出 6 位码，命令行发布必被 EOTP 拦。
 
 ## 5. 插件市场说明
 
@@ -54,6 +59,8 @@
 - [x] **v1.5.2 发布**（2026-10-29）：**纯文档版**，代码零改动。tag `v1.5.2` → `56255d8`，Release <https://github.com/xinspark/dsh-better-session-topbar/releases/tag/v1.5.2>；npm 上 `dist-tags.latest = 1.5.2`，包内 README 已含「npm 优先」安装段（1.5.1 的包内 README 停留在只写 GitHub 的旧稿）。
 - [x] **市场条目改名的 PR**：`_market/awesome-dsh-plugin` 分支 `update/dsh-better-session-topbar`（提交 `671daae`）——条目文件改名为 `xinspark__dsh-better-session-topbar.yml` 并更新 `url` / `name` / 描述（去掉 1.5.0 已删除的「同度量对话框」措辞），两个 README 用 `generate-readme.mjs` 重新生成，只动本条目。**已合并：[#10090](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/pull/10090)**（`fkysly` 于 2026-10-28T17:09:54Z 合并，merge commit `2d548a9`；两个 check 全绿）。上游 `main` 已是新条目、旧文件已删、README 第 1436 行同步；本地 `_market` 克隆已 reset 到 `origin/main`、合并分支已删。
 - [x] **npm 页面 README 已刷新**（2026-10-29，随 1.5.2）：包内 README 现在写的是「npm 优先、GitHub 等价」，CHANGELOG 也补上了「上架 npm」那条。1.5.1 的包内快照是发布早于文档更新造成的，已随新版本自然消解。
-- [x] **npm 令牌清理 + 2FA 恢复**（2026-10-29）：发布用的 `publish-topbar-1.5.1`（Bypass 2FA）与旧的 `Agent` 都已在网页删除；所有者随后新建了一个**不勾 Bypass**的 Read/Write token 放进维护台（`NPM_TOKEN`，实测 `whoami → xinspark`），账号现共存这 1 个。账号级「Require two-factor authentication for write actions」已勾回。**下次发版**：这个非 bypass token 会被 2FA 拦（会要求 6 位码或 WebAuthn 认证），所以要么发版时再建一个 Bypass token（发布后即删），要么改走 Trusted Publishing（GitHub Actions + OIDC，免 token，推荐）。
+- [x] **v1.5.3 发布**（2026-10-29）：**修复三级面包屑**在窄顶栏下的三处显示问题（文字溢出、分隔符被压没、末级箭头被裁），代码层面只动 CSS 约束。tag `v1.5.3` → `2e8463e`；Release <https://github.com/xinspark/dsh-better-session-topbar/releases/tag/v1.5.3>；**npm 由 GitHub Actions 首次以 Trusted Publishing 完成发布**（run 40782810320，success，带 provenance），`dist-tags.latest = 1.5.3`。
+- [x] **npm 改为 Trusted Publishing**（2026-10-29）：新增 `.github/workflows/publish.yml`（`release: published` + `workflow_dispatch`，`id-token: write`，跑 `npm test` 后 `npm publish --provenance`）；npm 包页面已配好信任发布者（GitHub Actions / xinspark / dsh-better-session-topbar / publish.yml，勾了 Allow npm publish）。**从此发版不再需要任何 token**，也绕开了「只有安全密钥、出不了 6 位码」的死结。
+- [x] **npm 令牌清理 + 2FA 恢复**（2026-10-29）：发布用的 `publish-topbar-1.5.1`（Bypass 2FA）与旧的 `Agent` 都已在网页删除；所有者随后新建了一个**不勾 Bypass**的 Read/Write token 放进维护台（`NPM_TOKEN`，实测 `whoami → xinspark`），账号现共存这 1 个。账号级「Require two-factor authentication for write actions」已勾回。该 token 现在只用于维护器的只读查询；发版已改走 Trusted Publishing。
 - [x] **`0.0.0-stage` 占位版本 —— 已知遗留，决定不处理**（2026-10-29，所有者决定）：staged publishing 首次发布留下的空壳，不在 `latest` 上、`dsh plugin add` 永远装到 1.5.2，**不影响安装与运行**。删它的门槛：需要「非 Bypass」token，且必须在「写入操作要求 2FA」关闭的窗口内（否则要 6 位码，而账号只有安全密钥）；本次已试到 WebAuthn 认证环节（`Something went wrong`），所有者选择保留。以后若要清，按这个顺序做一次即可：临时关写入 2FA → 新建不勾 Bypass 的 Read/Write token → `npm unpublish dsh-better-session-topbar@0.0.0-stage` → 删 token → 勾回 2FA。
 - [x] **实机验收**（2026-10-29，所有者本人执行）：干净 profile 实装 tag 版 + rc.3 界面点检（顶栏 / 两个下拉 / 添加工作区 / 插件详情页）已跑完，**无问题**。维护者未逐项复核，本条以所有者确认为准。
