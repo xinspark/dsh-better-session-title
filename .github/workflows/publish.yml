@@ -1,0 +1,39 @@
+name: publish
+
+# 用 npm 的 Trusted Publishing（OIDC）发版：不需要任何 npm token。
+# 前置条件（只需配一次）：npm 包页面 → Settings → Trusted publisher →
+#   GitHub Actions，owner/repo = xinspark/dsh-better-session-topbar，workflow = publish.yml
+#
+# 触发方式：
+#   · 在 GitHub 上发布 Release（published）
+#   · 或手动 Actions → publish → Run workflow
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write # 换取 npm 的短期发布凭据，必须
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      # Trusted Publishing 需要 npm >= 11.5.1
+      - name: Use the latest npm
+        run: npm install -g npm@latest
+
+      # 发布前先跑仓库自带的冒烟测试（与本地 npm test 同一套）
+      - name: Smoke test
+        run: npm test
+
+      - name: Publish to npm
+        run: npm publish --access public --provenance
