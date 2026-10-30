@@ -24,7 +24,7 @@
 ## 3. 每日 21:00 检查清单
 
 1. **GitHub**：列出 open Issues / PRs，每条给：现象、是否可复现、建议处置（修复 / 需要信息 / 关闭）、回复草稿。
-2. **DSH 版本**：记录当前实例版本（DSH NEXT 版本、runtime `@deepseek-ai/dsh` 版本、客户端包版本）；与插件上次适配的版本比对；按「DSH 升级维护清单」10 类耦合点给出「本次升级是否影响」的结论。
+2. **DSH 版本**：记录当前实例版本（DSH NEXT 版本、runtime `@deepseek-ai/dsh` 版本、客户端包版本）；与插件上次适配的版本比对；先跑 `npm run check:instance`（读 `app.asar` 逐项核对槽位名 / 组件导出 / DOM 锚点 / 服务方法，16 项 PASS/FAIL），再按「DSH 升级维护清单」10 类耦合点给出「本次升级是否影响」的结论。
 3. **待发布**：本地未推送提交、未发布 tag、版本号与 CHANGELOG 是否一致。
 4. **市场**：`awesome-dsh-plugin/awesome-dsh-plugin` 的 `data/plugins/xinspark__dsh-better-session-topbar.yml` 与 README 列表条目，是否与最新版本/功能一致；只输出 diff 草稿。
 5. **汇总**：把「今晚可执行的外部动作」逐项列出，等批准。
@@ -50,7 +50,7 @@
   - 列表条目：`README.md` 与 `README.zh.md` 的 UI 分类下一条链接。
 - 只在**功能描述或仓库地址变化**时改它；纯版本号升级（目录里不含 version 字段）不需要动。
 
-## 6. 当前待办（2026-10-29）
+## 6. 当前待办（2026-10-30）
 
 - [x] **v1.4.0 发布**（2026-10-27）：tag `v1.4.0` → `a9ab1fe`，GitHub Release 已建，远端 `main` = `1738c3d`（含 MAINTAINING 本文）。
 - [x] **v1.5.0 发布**（2026-10-28）：tag `v1.5.0` → `e3ba1d9`（快进自 `1738c3d`，无需 force），远端 `main` = `e3ba1d9`；Release <https://github.com/xinspark/dsh-better-session-topbar/releases/tag/v1.5.0>（非 draft / 非 prerelease，正文取 CHANGELOG 1.5.0 节）。内容：跟随 DSH NEXT 2.0.20 / Harness 0.2.1-rc.3，「添加工作区」完全交给宿主，删除自绘面板与目录流接管；新增 `npm test` 渲染冒烟。
@@ -65,3 +65,6 @@
 - [x] **npm 令牌清理 + 2FA 恢复**（2026-10-29）：发布用的 `publish-topbar-1.5.1`（Bypass 2FA）与旧的 `Agent` 都已在网页删除；所有者随后新建了一个**不勾 Bypass**的 Read/Write token 放进维护台（`NPM_TOKEN`，实测 `whoami → xinspark`），账号现共存这 1 个。账号级「Require two-factor authentication for write actions」已勾回。该 token 现在只用于维护器的只读查询；发版已改走 Trusted Publishing。
 - [x] **`0.0.0-stage` 占位版本 —— 已知遗留，决定不处理**（2026-10-29，所有者决定）：staged publishing 首次发布留下的空壳，不在 `latest` 上、`dsh plugin add` 永远装到 1.5.2，**不影响安装与运行**。删它的门槛：需要「非 Bypass」token，且必须在「写入操作要求 2FA」关闭的窗口内（否则要 6 位码，而账号只有安全密钥）；本次已试到 WebAuthn 认证环节（`Something went wrong`），所有者选择保留。以后若要清，按这个顺序做一次即可：临时关写入 2FA → 新建不勾 Bypass 的 Read/Write token → `npm unpublish dsh-better-session-topbar@0.0.0-stage` → 删 token → 勾回 2FA。
 - [x] **实机验收**（2026-10-29，所有者本人执行）：干净 profile 实装 tag 版 + rc.3 界面点检（顶栏 / 两个下拉 / 添加工作区 / 插件详情页）已跑完，**无问题**。维护者未逐项复核，本条以所有者确认为准。
+- [x] **实例同步：2.0.20 / rc.3 → 2.0.21-next / rc.4**（2026-10-30，本地提交 `1.5.4`）：**结论零迁移**。逐包 sha256 比对 npm tarball（rc.3 vs rc.4）：`primitives` 的 `lib/index.js` **540,800 字节逐字相同**；`conversation` 只有会话视图标签 tooltip（去掉 `session.moreViewsCurrent`）与顶栏无关；`ui-workspace` / `slots` / `locale` / `layout` / `dsh-workspace` / `host-directory-picker-auto` 只改 `package.json`。桌面壳 2.0.21-next 的更新说明里没有顶栏/标题栏改动（上游 rc.4 + 启动与窗口状态恢复 + 恢复助手 + Agents Anywhere 2.1.0）。运行期用 `cordis_inspect_query`（client Slots）复核：`conversation.session.header.actions` 仍是 session 作用域 list 槽，`bst-breadcrumb -40`（active）排最前，其余五个原生项顺序与 rc.3 相同；`plugins.row.config` 的键仍 active。**代码零改动，只改注释与文档**。
+- [x] **新增实例对账命令**（2026-10-30）：`tools/check-instance.mjs` + `npm run check:instance` —— 直接读当前实例的 `app.asar`，核对 16 项硬契约（primitives 21 个具名导出、四个槽位名、四个顶栏 DOM 锚点、`workspaces` / `sessions` 门面方法、`uiWorkspace` 五个方法、`workspace.add`、`locale` 入口、宿主目录选择 occupant、preload 桥）。期望值从 `lib/client.js` 自己抽取，不在脚本里抄第二份；`tools/` 不在 npm `files` 白名单，不随包发布。本机实测 16/16 PASS。
+- [ ] **v1.5.4 发布**（2026-10-30，待批准）：本地已提交（版本号 + CHANGELOG + README 基线 + 对账命令），**未推送、未打 tag、未发 Release、未发 npm**。批准后按 §4 执行：`git push` → tag `v1.5.4` → Release（正文取 CHANGELOG 1.5.4 节）→ Actions 自动 `npm publish --provenance` → 复核 `dist-tags.latest`。市场条目**不需要动**（目录无 version 字段，功能描述未变）。

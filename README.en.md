@@ -26,7 +26,7 @@ All inline row actions reuse native DSH capabilities: rename workspace/session, 
 
 Works on **Windows · macOS · Linux** (DSH Web GUI) — plain JavaScript, no native dependencies, no build step for distribution.
 
-> Verification baseline: **DSH NEXT 2.0.20 (bundling DeepSeek Harness 0.2.1-rc.3)** and `dsh web`; 0.2.1-rc.2 and 0.2.0-rc.2 remain compatible. Other versions are untested.
+> Verification baseline: **DSH NEXT 2.0.21-next (bundling DeepSeek Harness 0.2.1-rc.4)** and `dsh web`; 2.0.20 / 0.2.1-rc.3, 0.2.1-rc.2 and 0.2.0-rc.2 remain compatible (the rc.3 → rc.4 reconciliation found zero migration). Other versions are untested.
 
 ## Install
 
@@ -37,7 +37,7 @@ Works on **Windows · macOS · Linux** (DSH Web GUI) — plain JavaScript, no na
 dsh plugin --profile web add dsh-better-session-topbar
 
 # from GitHub (equivalent; pins a tag or commit)
-dsh plugin --profile web add github:xinspark/dsh-better-session-topbar#v1.5.3
+dsh plugin --profile web add github:xinspark/dsh-better-session-topbar#v1.5.4
 ```
 
 - **Consider locking a commit**: a GitHub install pulls the repository source, so later pushes don't silently change what you run. To pin the exact content, use `github:xinspark/dsh-better-session-topbar#<commit-sha>` (as recommended by the official docs).
@@ -45,7 +45,7 @@ dsh plugin --profile web add github:xinspark/dsh-better-session-topbar#v1.5.3
 
   ```sh
   dsh plugin --profile web add ./dsh-better-session-topbar
-  dsh plugin --profile web add ./dsh-better-session-topbar-1.5.3.tgz
+  dsh plugin --profile web add ./dsh-better-session-topbar-1.5.4.tgz
   ```
 
 Then start the Web UI: `dsh web` (or `dsh --profile web`). The first `add` auto-initializes the profile with `@deepseek-ai/dsh-base`.
@@ -150,7 +150,7 @@ This plugin sits on DSH's internal contracts (there is no stable third-party API
 | Check | Where | How to verify after an upgrade |
 | --- | --- | --- |
 | Package name in three places | `package.json` name / `cordis.patch.yml` row id / `__ModuleLoader__.load({id})` | The plugin loads; no "import failed" |
-| Slot names | `conversation.session.header.actions`, `sidebar.workspaces.directoryFlow`, `conversation.hero.workspace.directoryFlow`, `plugins.row.config` | `cordis_inspect_query` shows the names and props; sibling order changes between versions (rc.3: team -20, preset -10, cost-meter 1, subagent-catalog 10, job-list 20) and the plugin only relies on its own -40 |
+| Slot names | `conversation.session.header.actions`, `sidebar.workspaces.directoryFlow`, `conversation.hero.workspace.directoryFlow`, `plugins.row.config` | Run `npm run check:instance` first (it reads the asar and checks each item), then use `cordis_inspect_query` for the names and props; sibling order changes between versions (rc.3 and rc.4 match: team -20, preset -10, cost-meter 1, subagent-catalog 10, job-list 20) and the plugin only relies on its own -40 |
 | Services | required `slots` / `workspaces` / `sessions` / `uiWorkspace` / `locale`; optional `shortcuts` / `configForms` | Dropdown actions work, the settings page exists |
 | Directory interaction | the plugin **takes nothing over and draws no panel**: `workspace.add` → the host occupant (native = official renderless → OS chooser; browse = official in-app panel); only an empty hole falls back to the preload bridge `__DSH_DIRECTORY_PICKER__` / `pickDirectory()` | Click "Add workspace" once in each of desktop window / web / community desktop / community web: a native host must show the OS dialog, a browse host the official in-app panel |
 | Topbar DOM anchors | `header[data-window-drag]` + `nav:has(~ div .bst-crumbs)` (0.2.0's `data-conversation-*` are gone) | Native title hidden, narrow-screen switch works |

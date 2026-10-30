@@ -26,7 +26,7 @@
 
 支持 **Windows · macOS · Linux**（DSH Web GUI）——纯 JavaScript，无原生依赖，分发无需构建步骤。
 
-> 验证基线：**DSH NEXT 2.0.20（内置 DeepSeek Harness 0.2.1-rc.3）** 与 `dsh web`；0.2.1-rc.2、0.2.0-rc.2 仍在兼容范围内。其它版本未经验证。
+> 验证基线：**DSH NEXT 2.0.21-next（内置 DeepSeek Harness 0.2.1-rc.4）** 与 `dsh web`；2.0.20 / 0.2.1-rc.3、0.2.1-rc.2、0.2.0-rc.2 仍在兼容范围内（rc.3 → rc.4 逐项对账零迁移）。其它版本未经验证。
 
 ## 安装
 
@@ -37,7 +37,7 @@
 dsh plugin --profile web add dsh-better-session-topbar
 
 # 从 GitHub 安装（等价；可锁 tag 或 commit）
-dsh plugin --profile web add github:xinspark/dsh-better-session-topbar#v1.5.3
+dsh plugin --profile web add github:xinspark/dsh-better-session-topbar#v1.5.4
 ```
 
 - **建议锁定 commit**：GitHub 安装拉取的是仓库源码，tag 之后的新推送不会自动影响已安装版本；如需把运行内容严格固定到某个提交，用 `github:xinspark/dsh-better-session-topbar#<commit-sha>`（官方文档推荐做法）。
@@ -45,7 +45,7 @@ dsh plugin --profile web add github:xinspark/dsh-better-session-topbar#v1.5.3
 
   ```sh
   dsh plugin --profile web add ./dsh-better-session-topbar
-  dsh plugin --profile web add ./dsh-better-session-topbar-1.5.3.tgz
+  dsh plugin --profile web add ./dsh-better-session-topbar-1.5.4.tgz
   ```
 
 然后启动 Web UI：`dsh web`（或 `dsh --profile web`）。首次 `add` 会自动用 `@deepseek-ai/dsh-base` 初始化 profile。
@@ -150,7 +150,7 @@ dsh plugin --profile web add github:xinspark/dsh-better-session-topbar#v1.5.3
 | 检查项 | 位置 | 升级后怎么验 |
 | --- | --- | --- |
 | 包名三处一致 | `package.json` name / `cordis.patch.yml` 行 id / `__ModuleLoader__.load({id})` | 插件列表能加载、无「导入失败」 |
-| 槽位名 | `conversation.session.header.actions`、`sidebar.workspaces.directoryFlow`、`conversation.hero.workspace.directoryFlow`、`plugins.row.config` | `cordis_inspect_query` 看名字与 props 是否还在；同槽原生项顺序会变（rc.3：team -20、preset -10、cost-meter 1、subagent-catalog 10、job-list 20），本插件只依赖自己的 -40 |
+| 槽位名 | `conversation.session.header.actions`、`sidebar.workspaces.directoryFlow`、`conversation.hero.workspace.directoryFlow`、`plugins.row.config` | 先跑 `npm run check:instance`（直接读 asar 逐项核对），再用 `cordis_inspect_query` 看名字与 props；同槽原生项顺序会变（rc.3 与 rc.4 相同：team -20、preset -10、cost-meter 1、subagent-catalog 10、job-list 20），本插件只依赖自己的 -40 |
 | 服务依赖 | 必需 `slots` / `workspaces` / `sessions` / `uiWorkspace` / `locale`；可选 `shortcuts` / `configForms` | 下拉动作可用、设置页存在 |
 | 目录选择交互 | 插件**不接管、不自绘**：`workspace.add` → 宿主 occupant（native = 官方 renderless → 系统选择器；browse = 官方应用内面板）；槽空时才兜底 preload 桥 `__DSH_DIRECTORY_PICKER__` / `pickDirectory()` | 四种组合各点一次「添加工作区」：native 宿主应直接见系统对话框，browse 宿主应见官方应用内面板 |
 | 顶栏 DOM 锚点 | `header[data-window-drag]` + `nav:has(~ div .bst-crumbs)`（0.2.0 的 `data-conversation-*` 已移除） | 原生标题被隐藏、窄屏切换正常 |

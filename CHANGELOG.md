@@ -5,6 +5,26 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.4] - 2026-10-30
+
+**跟随本地实例升级（DSH NEXT 2.0.21-next / DeepSeek Harness 0.2.1-rc.4）**：逐项对账结论是**零迁移** —— 界面行为与 1.5.3 完全相同，代码只动注释；新增一条可复跑的对账命令，把「升级后人工核对 10 类耦合点」变成一次执行。
+
+### Added
+
+- **`npm run check:instance`**（`tools/check-instance.mjs`，不随包发布）：直接读当前安装实例的 `app.asar`，按插件真正依赖的硬契约逐项 PASS/FAIL —— primitives 的 21 个具名导出、四个槽位名、顶栏 DOM 锚点（`header[data-window-drag]` / `…_headerActions` / `…_crumbs` / `header.lineage`）、`workspaces` 与 `sessions` 门面方法、`uiWorkspace` 五个方法、`workspace.add` 命令、`locale` 取词入口、宿主目录选择 occupant、桌面壳 preload 桥。期望值从 `lib/client.js` 自己抽取（不抄第二份），退出码即结论。
+  - 本机实测：`2.0.21-next · harness 0.2.1-rc.4` → **16/16 PASS**。
+
+### Changed
+
+- 基线抬到 **DSH NEXT 2.0.21-next（Harness 0.2.1-rc.4）**：README 中英两版的验证基线、`lib/client.js` 顶部与「DSH 升级维护清单」里的实测记录（同槽原生顺序 rc.4 与 rc.3 逐项相同；preload 桥 `__DSH_DIRECTORY_PICKER__` 仍在）。
+- 维护流程改为「先跑 `npm run check:instance`，再实机点一遍」。
+
+### Notes
+
+- 对账依据（rc.3 → rc.4，逐包 sha256 比 npm tarball）：`dsh-client-ui-primitives` 的 bundle **540,800 字节逐字相同**；`dsh-client-ui-conversation` 只有会话视图标签的 tooltip 行为变化（去掉 `session.moreViewsCurrent` 文案键），顶栏渲染树、槽位拓扑、CSS 类名结构未变；`ui-workspace` / `slots` / `locale` / `layout` / `dsh-workspace` / `host-directory-picker-auto` 只改了 `package.json` 版本号。
+- 桌面壳 2.0.21-next 的更新说明里没有顶栏/标题栏相关改动（上游升级到 rc.4 + 启动与窗口状态恢复 + 恢复助手 + Agents Anywhere 2.1.0）。
+- 运行期复核：`cordis_inspect_query`（client Slots）确认 `conversation.session.header.actions` 仍是 session 作用域的 list 槽，占用者 `bst-breadcrumb -40`（active）与 rc.3 的五个原生项顺序不变；`plugins.row.config` 里 `dsh-better-session-topbar#dsh-better-session-topbar` 仍为 active。
+
 ## [1.5.3] - 2026-10-29
 
 **修复子智能体会话（三级面包屑）在窄顶栏下的显示**：文字会撑出自己那一级、两级分隔符被挤没、末级的箭头被裁掉。三处都是 CSS 约束问题，**层级、图标、下拉与点击行为一律未变**。
